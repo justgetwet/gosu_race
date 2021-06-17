@@ -4,6 +4,7 @@ GEM
     gosu (1.2.0)
 
 PLATFORMS
+  ruby
   x64-mingw32
 
 DEPENDENCIES
