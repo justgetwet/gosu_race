@@ -10,7 +10,7 @@ class MyGame < Gosu::Window
     super @width,@height,false
     @background = Gosu::Image.new('course.png')
     @ball = Gosu::Image.new('racer_8.png')
-    @ball_2 = Gosu::Image.new('racer_8.png')
+    @ball_2 = Gosu::Image.new('racer_1.png')
     # @time = Gosu.milliseconds/1000
     @time = 0
     # @tick = 0
