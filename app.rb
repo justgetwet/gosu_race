@@ -1,19 +1,22 @@
 require 'gosu'
-require './player.rb'
+require './readjson.rb'
 
 module RaceData
+
+  $handicaps = RaceFile.handicaps
+  $racetimes = RaceFile.racetimes
 
   def racers
     # color => [handicap, lap]
     {
-      'white' => [0, 3.83],
-      'black' => [0, 3.80],
-      'red' => [10, 3.80],
-      'blue' => [20, 3.77],
-      'yellow' => [20, 3.82],
-      'green' => [30, 3.80],
-      'orange' => [40, 3.79],
-      'pink' => [40, 3.77]
+      'white' => [$handicaps[0], $racetimes[0]],
+      'black' => [$handicaps[1], $racetimes[1]],
+      'red' => [$handicaps[2], $racetimes[2]],
+      'blue' => [$handicaps[3], $racetimes[3]],
+      'yellow' => [$handicaps[4], $racetimes[4]],
+      'green' => [$handicaps[5], $racetimes[5]],
+      'orange' => [$handicaps[6], $racetimes[6]],
+      'pink' => [$handicaps[7], $racetimes[7]],
     }
 
   end
@@ -90,6 +93,16 @@ class MyGame < Gosu::Window
     @green = Gosu::Image.new('racer_6.png')
     @orange = Gosu::Image.new('racer_7.png')
     @pink = Gosu::Image.new('racer_8.png')
+
+    @white_img = Gosu::Image.new(RaceFile.images[0])
+    @black_img = Gosu::Image.new(RaceFile.images[1])
+    @red_img = Gosu::Image.new(RaceFile.images[2])
+    @blue_img = Gosu::Image.new(RaceFile.images[3])
+    @yellow_img = Gosu::Image.new(RaceFile.images[4])
+    @green_img = Gosu::Image.new(RaceFile.images[5])
+    @orange_img = Gosu::Image.new(RaceFile.images[6])
+    @pink_img = Gosu::Image.new(RaceFile.images[7])
+
 
     @lap_count = 0
     @lap = 6
@@ -220,11 +233,22 @@ class MyGame < Gosu::Window
 
   def draw
     @background.draw(0,0,0)
-
+    pos_x = 25
+    pos_y = 30
+    acc_x = 75
+    @white_img.draw(pos_x, pos_y,1)
+    @black_img.draw(pos_x += acc_x, pos_y, 1)
+    @red_img.draw(pos_x += acc_x, pos_y, 1)
+    @blue_img.draw(pos_x += acc_x, pos_y, 1)
+    @yellow_img.draw(pos_x += acc_x, pos_y, 1)
+    @green_img.draw(pos_x += acc_x, pos_y, 1)
+    @orange_img.draw(pos_x += acc_x, pos_y, 1)
+    @pink_img.draw(pos_x += acc_x, pos_y, 1)
     # if @tick < 360 * @lap + 36
     #   then @purple.draw(@x, @y, 1)
     #   else @purple.draw(@goal_x, @goal_y, 1)
     # end
+
 
     if @white_tick < 360 * @lap + 36
       then @white.draw(@white_x, @white_y, 1)
@@ -275,10 +299,10 @@ class MyGame < Gosu::Window
     
     # if 299.8 < @p_tick and @p_tick < 300.0 then p @p_x, @p_y, @p_tick end
 
-    @text.draw_text(@time, 450, 10, 1, 1.5, 1.5, Gosu::Color::RED)
+    @text.draw_text(@time, 50, 350, 1, 1.5, 1.5, Gosu::Color::RED)
 
     if @tick == 1 or (@tick+1) % fastest_tick_lap == 0 then @lap_count += 1 end
-    @text.draw_text(@lap_count, 450, 50, 1, 1.5, 1.5, Gosu::Color::BLUE)
+    @text.draw_text(@lap_count, 50, 400, 1, 1.5, 1.5, Gosu::Color::BLUE)
 
   end
 

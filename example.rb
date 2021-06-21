@@ -14,6 +14,12 @@
 # img = Gosu::Image.new('racer_3.png')
 # obj.setColor(img)
 
+require './readjson'
+
+p RaceFile.images[0]
+p RaceFile.handicaps
+p RaceFile.racetimes
+
 def racers
   # color => [handicap, lap]
   {
