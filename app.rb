@@ -5,6 +5,8 @@ module RaceData
 
   $handicaps = RaceFile.handicaps
   $racetimes = RaceFile.racetimes
+  $racernames = RaceFile.racernames
+  $racerranks = RaceFile.racerranks
 
   def racers
     # color => [handicap, lap]
@@ -21,7 +23,7 @@ module RaceData
 
   end
 
-  def handicap
+  def handicap # potision
     {
       0 => [168.0, 345.5],
       10 => [143.6, 335.4],
@@ -83,16 +85,25 @@ class MyGame < Gosu::Window
 
     @time = 0
 
-    @purple = Gosu::Image.new('racer_0.png')
+    @purple = Gosu::Image.new('./colors/racer_0.png')
 
-    @white = Gosu::Image.new('racer_1.png')
-    @black = Gosu::Image.new('racer_2.png')
-    @red = Gosu::Image.new('racer_3.png')
-    @blue = Gosu::Image.new('racer_4.png')
-    @yellow = Gosu::Image.new('racer_5.png')
-    @green = Gosu::Image.new('racer_6.png')
-    @orange = Gosu::Image.new('racer_7.png')
-    @pink = Gosu::Image.new('racer_8.png')
+    @white = Gosu::Image.new('./colors/racer_1.png')
+    @black = Gosu::Image.new('./colors/racer_2.png')
+    @red = Gosu::Image.new('./colors/racer_3.png')
+    @blue = Gosu::Image.new('./colors/racer_4.png')
+    @yellow = Gosu::Image.new('./colors/racer_5.png')
+    @green = Gosu::Image.new('./colors/racer_6.png')
+    @orange = Gosu::Image.new('./colors/racer_7.png')
+    @pink = Gosu::Image.new('./colors/racer_8.png')
+
+    @white_frm = Gosu::Image.new('./colors/frame_1.jpg')
+    @black_frm = Gosu::Image.new('./colors/frame_2.jpg')
+    @red_frm = Gosu::Image.new('./colors/frame_3.jpg')
+    @blue_frm = Gosu::Image.new('./colors/frame_4.jpg')
+    @yellow_frm = Gosu::Image.new('./colors/frame_5.jpg')
+    @green_frm = Gosu::Image.new('./colors/frame_6.jpg')
+    @orange_frm = Gosu::Image.new('./colors/frame_7.jpg')
+    @pink_frm = Gosu::Image.new('./colors/frame_8.jpg')
 
     @white_img = Gosu::Image.new(RaceFile.images[0])
     @black_img = Gosu::Image.new(RaceFile.images[1])
@@ -103,6 +114,22 @@ class MyGame < Gosu::Window
     @orange_img = Gosu::Image.new(RaceFile.images[6])
     @pink_img = Gosu::Image.new(RaceFile.images[7])
 
+    @white_rank = $racerranks[0]
+    @white_name = $racernames[0]
+    @black_rank = $racerranks[1]
+    @black_name = $racernames[1]
+    @red_rank = $racerranks[2]
+    @red_name = $racernames[2]
+    @blue_rank = $racerranks[3]
+    @blue_name = $racernames[3]
+    @yellow_rank = $racerranks[4]
+    @yellow_name = $racernames[4]
+    @green_rank = $racerranks[5]
+    @green_name = $racernames[5]
+    @orange_rank = $racerranks[6]
+    @oragne_name = $racernames[6]
+    @pink_rank = $racerranks[7]
+    @pink_name = $racernames[7]
 
     @lap_count = 0
     @lap = 6
@@ -182,49 +209,49 @@ class MyGame < Gosu::Window
       @tick += 1
       @time = Gosu.milliseconds * 1/1000
       # @tick += @t
-      # angle = @tick * Math::PI / 180
-      # @x += 4.5 * @t * Math.cos(-angle)
-      # @y += 2.3 * @t * Math.sin(-angle)
+      # rad = @tick * Math::PI / 180
+      # @x += 4.5 * @t * Math.cos(-rad)
+      # @y += 2.3 * @t * Math.sin(-rad)
 
       @white_tick += @white_t
-      angle = @white_tick * Math::PI / 180
-      @white_x += 4.5 * @white_t * Math.cos(-angle)
-      @white_y += 2.3 * @white_t * Math.sin(-angle)
+      rad = @white_tick * Math::PI / 180
+      @white_x += 4.5 * @white_t * Math.cos(-rad)
+      @white_y += 2.3 * @white_t * Math.sin(-rad)
 
-      @black_tick += @black_t
-      angle = @black_tick * Math::PI / 180
-      @black_x += 4.5 * @black_t * Math.cos(-angle)
-      @black_y += 2.3 * @black_t * Math.sin(-angle)
+      # @black_tick += @black_t
+      # rad = @black_tick * Math::PI / 180
+      # @black_x += 4.5 * @black_t * Math.cos(-rad)
+      # @black_y += 2.3 * @black_t * Math.sin(-rad)
 
-      @red_tick += @red_t
-      angle = @red_tick * Math::PI / 180
-      @red_x += 4.5 * @red_t * Math.cos(-angle)
-      @red_y += 2.3 * @red_t * Math.sin(-angle)
+      # @red_tick += @red_t
+      # rad = @red_tick * Math::PI / 180
+      # @red_x += 4.5 * @red_t * Math.cos(-rad)
+      # @red_y += 2.3 * @red_t * Math.sin(-rad)
 
-      @blue_tick += @blue_t
-      angle = @blue_tick * Math::PI / 180
-      @blue_x += 4.5 * @blue_t * Math.cos(-angle)
-      @blue_y += 2.3 * @blue_t * Math.sin(-angle)
+      # @blue_tick += @blue_t
+      # rad = @blue_tick * Math::PI / 180
+      # @blue_x += 4.5 * @blue_t * Math.cos(-rad)
+      # @blue_y += 2.3 * @blue_t * Math.sin(-rad)
 
-      @yellow_tick += @yellow_t
-      angle = @yellow_tick * Math::PI / 180
-      @yellow_x += 4.5 * @yellow_t * Math.cos(-angle)
-      @yellow_y += 2.3 * @yellow_t * Math.sin(-angle)
+      # @yellow_tick += @yellow_t
+      # rad = @yellow_tick * Math::PI / 180
+      # @yellow_x += 4.5 * @yellow_t * Math.cos(-rad)
+      # @yellow_y += 2.3 * @yellow_t * Math.sin(-rad)
 
-      @green_tick += @green_t
-      angle = @green_tick * Math::PI / 180
-      @green_x += 4.5 * @green_t * Math.cos(-angle)
-      @green_y += 2.3 * @green_t * Math.sin(-angle)
+      # @green_tick += @green_t
+      # rad = @green_tick * Math::PI / 180
+      # @green_x += 4.5 * @green_t * Math.cos(-rad)
+      # @green_y += 2.3 * @green_t * Math.sin(-rad)
 
-      @orange_tick += @orange_t
-      angle = @orange_tick * Math::PI / 180
-      @orange_x += 4.5 * @orange_t * Math.cos(-angle)
-      @orange_y += 2.3 * @orange_t * Math.sin(-angle)
+      # @orange_tick += @orange_t
+      # rad = @orange_tick * Math::PI / 180
+      # @orange_x += 4.5 * @orange_t * Math.cos(-rad)
+      # @orange_y += 2.3 * @orange_t * Math.sin(-rad)
 
-      @pink_tick += @pink_t
-      angle = @pink_tick * Math::PI / 180
-      @pink_x += 4.5 * @pink_t * Math.cos(-angle)
-      @pink_y += 2.3 * @pink_t * Math.sin(-angle)
+      # @pink_tick += @pink_t
+      # rad = @pink_tick * Math::PI / 180
+      # @pink_x += 4.5 * @pink_t * Math.cos(-rad)
+      # @pink_y += 2.3 * @pink_t * Math.sin(-rad)
 
     end
 
@@ -233,27 +260,65 @@ class MyGame < Gosu::Window
 
   def draw
     @background.draw(0,0,0)
+
     pos_x = 25
-    pos_y = 30
-    acc_x = 75
-    @white_img.draw(pos_x, pos_y,1)
-    @black_img.draw(pos_x += acc_x, pos_y, 1)
-    @red_img.draw(pos_x += acc_x, pos_y, 1)
-    @blue_img.draw(pos_x += acc_x, pos_y, 1)
-    @yellow_img.draw(pos_x += acc_x, pos_y, 1)
-    @green_img.draw(pos_x += acc_x, pos_y, 1)
-    @orange_img.draw(pos_x += acc_x, pos_y, 1)
-    @pink_img.draw(pos_x += acc_x, pos_y, 1)
+    add_x = 75
+    pos_y = 10
+    @white_img.draw(pos_x, pos_y, 2)
+    @white_frm.draw(pos_x, pos_y, 1)
+    @text.draw_text(@white_rank, pos_x, pos_y+70, 3, 0.75, 0.75, Gosu::Color::BLACK)
+    @text.draw_text(@white_name, pos_x, pos_y+85, 3, 0.75, 0.75, Gosu::Color::BLACK)
+
+    @black_img.draw(pos_x += add_x, pos_y, 2)
+    @black_frm.draw(pos_x, pos_y, 1)
+    @text.draw_text(@black_rank, pos_x, pos_y+70, 3, 0.75, 0.75, Gosu::Color::BLACK)
+    @text.draw_text(@black_name, pos_x, pos_y+85, 3, 0.75, 0.75, Gosu::Color::BLACK)
+
+    @red_img.draw(pos_x += add_x, pos_y, 2)
+    @red_frm.draw(pos_x, pos_y, 1)
+    @text.draw_text(@red_rank, pos_x, pos_y+70, 3, 0.75, 0.75, Gosu::Color::BLACK)
+    @text.draw_text(@red_name, pos_x, pos_y+85, 3, 0.75, 0.75, Gosu::Color::BLACK)
+    
+    @blue_img.draw(pos_x += add_x, pos_y, 2)
+    @blue_frm.draw(pos_x, pos_y, 1)
+    @text.draw_text(@blue_rank, pos_x, pos_y+70, 3, 0.75, 0.75, Gosu::Color::BLACK)
+    @text.draw_text(@blue_name, pos_x, pos_y+85, 3, 0.75, 0.75, Gosu::Color::BLACK)
+
+    @yellow_img.draw(pos_x += add_x, pos_y, 2)
+    @yellow_frm.draw(pos_x, pos_y, 1)
+    @text.draw_text(@yellow_rank, pos_x, pos_y+70, 3, 0.75, 0.75, Gosu::Color::BLACK)
+    @text.draw_text(@yellow_name, pos_x, pos_y+85, 3, 0.75, 0.75, Gosu::Color::BLACK)
+
+    @green_img.draw(pos_x += add_x, pos_y, 2)
+    @green_frm.draw(pos_x, pos_y, 1)
+    @text.draw_text(@green_rank, pos_x, pos_y+70, 3, 0.75, 0.75, Gosu::Color::BLACK)
+    @text.draw_text(@green_name, pos_x, pos_y+85, 3, 0.75, 0.75, Gosu::Color::BLACK)
+
+    @orange_img.draw(pos_x += add_x, pos_y, 2)
+    @orange_frm.draw(pos_x, pos_y, 1)
+    @text.draw_text(@orange_rank, pos_x, pos_y+70, 3, 0.75, 0.75, Gosu::Color::BLACK)
+    @text.draw_text(@oragne_name, pos_x, pos_y+85, 3, 0.75, 0.75, Gosu::Color::BLACK)
+
+    @pink_img.draw(pos_x += add_x, pos_y, 2)
+    @pink_frm.draw(pos_x, pos_y, 1)
+    @text.draw_text(@pink_rank, pos_x, pos_y+70, 3, 0.75, 0.75, Gosu::Color::BLACK)
+    @text.draw_text(@pink_name, pos_x, pos_y+85, 3, 0.75, 0.75, Gosu::Color::BLACK)
+
     # if @tick < 360 * @lap + 36
     #   then @purple.draw(@x, @y, 1)
     #   else @purple.draw(@goal_x, @goal_y, 1)
     # end
 
-
     if @white_tick < 360 * @lap + 36
       then @white.draw(@white_x, @white_y, 1)
-      else @white.draw(@goal_x+goal_postion['white'], @goal_y, 1)
+      # else @white.draw(@goal_x+goal_postion['white'], @goal_y, 1)
+      else unless $flag
+        $goal_time = @time.clone
+        $flag = true
+      end
     end
+    @text.draw_text($goal_time, 300, 300, 1, 1, 1, Gosu::Color::RED)
+
 
     if @black_tick < 360 * @lap + 36
       then @black.draw(@black_x, @black_y, 1)

@@ -18,6 +18,25 @@ module RaceFile
     return images
   end
 
+  def racernames
+    racernames = []
+    $hash["no"].size.times do |n|
+      name = $hash["name"][n.to_s]
+      racernames << name 
+    end
+    return racernames
+  end
+
+  def racerranks
+    racerranks = []
+    $hash["no"].size.times do |n|
+      rank = $hash["rank"][n.to_s]
+      team = $hash["team"][n.to_s]
+      racerranks << rank + " " + team
+    end
+    return racerranks
+  end
+
   def handicaps
     handicaps = []
     $hash["no"].size.times do |n|
@@ -29,12 +48,12 @@ module RaceFile
   def racetimes
     racetimes = []
     $hash["no"].size.times do |n|
-      racetimes << $hash["try"][n.to_s]
+      racetimes << $hash["prd"][n.to_s]
     end
     return racetimes
   end
 
-  module_function :images, :handicaps, :racetimes
+  module_function :images, :handicaps, :racetimes, :racernames, :racerranks
 
 end
 
