@@ -3,10 +3,12 @@ require './readjson.rb'
 
 module RaceData
 
+  $racerimages = RaceFile.images
+  $racernames = RaceFile.names
+  $racerranks = RaceFile.ranks
   $handicaps = RaceFile.handicaps
-  $racetimes = RaceFile.racetimes
-  $racernames = RaceFile.racernames
-  $racerranks = RaceFile.racerranks
+  $racetimes = RaceFile.prdtimes
+  $goaldiffs = RaceFile.prddiffs
 
   def racers
     # color => [handicap, lap]
@@ -78,6 +80,7 @@ class MyGame < Gosu::Window
   include RaceData
 
   def initialize
+
     @width = 640
     @height = 480
     super @width,@height,false
@@ -105,35 +108,43 @@ class MyGame < Gosu::Window
     @orange_frm = Gosu::Image.new('./colors/frame_7.jpg')
     @pink_frm = Gosu::Image.new('./colors/frame_8.jpg')
 
-    @white_img = Gosu::Image.new(RaceFile.images[0])
-    @black_img = Gosu::Image.new(RaceFile.images[1])
-    @red_img = Gosu::Image.new(RaceFile.images[2])
-    @blue_img = Gosu::Image.new(RaceFile.images[3])
-    @yellow_img = Gosu::Image.new(RaceFile.images[4])
-    @green_img = Gosu::Image.new(RaceFile.images[5])
-    @orange_img = Gosu::Image.new(RaceFile.images[6])
-    @pink_img = Gosu::Image.new(RaceFile.images[7])
+    @white_img = Gosu::Image.new($racerimages[0])
+    @black_img = Gosu::Image.new($racerimages[1])
+    @red_img = Gosu::Image.new($racerimages[2])
+    @blue_img = Gosu::Image.new($racerimages[3])
+    @yellow_img = Gosu::Image.new($racerimages[4])
+    @green_img = Gosu::Image.new($racerimages[5])
+    @orange_img = Gosu::Image.new($racerimages[6])
+    @pink_img = Gosu::Image.new($racerimages[7])
 
     @white_rank = $racerranks[0]
     @white_name = $racernames[0]
+    @white_goal = $goaldiffs[0].round(0)
     @black_rank = $racerranks[1]
     @black_name = $racernames[1]
+    @black_goal = $goaldiffs[1].round(0)
     @red_rank = $racerranks[2]
     @red_name = $racernames[2]
+    @red_goal = $goaldiffs[2].round(0)
     @blue_rank = $racerranks[3]
     @blue_name = $racernames[3]
+    @blue_goal = $goaldiffs[3].round(0)
     @yellow_rank = $racerranks[4]
     @yellow_name = $racernames[4]
+    @yellow_goal = $goaldiffs[4].round(0)
     @green_rank = $racerranks[5]
     @green_name = $racernames[5]
+    @green_goal = $goaldiffs[5].round(0)
     @orange_rank = $racerranks[6]
     @oragne_name = $racernames[6]
+    @orange_goal = $goaldiffs[6].round(0)
     @pink_rank = $racerranks[7]
     @pink_name = $racernames[7]
+    @pink_goal = $goaldiffs[7].round(0)
 
     @lap_count = 0
     @lap = 6
-    @lap_draw = 0
+    @fast_foward = 2
 
     # @s0m_x, @s0m_y = 168.0, 345.5
     # @s10m_x, @s10m_y = 143.6, 335.4 # tick: 317.0
@@ -145,61 +156,67 @@ class MyGame < Gosu::Window
     # @zero_x, @zero_y = 320, 370
     @goal_x, @goal_y = 471.1, 344.1
 
+
+
     purple_lap100m = 1.2
     @t = 1.2 / purple_lap100m
     @tick = 0
+
     @x, @y = 320, 370
 
     white_handi = racers['white'][0]
     white_lap100m = racers['white'][1]
-    @white_t = 1.2 / white_lap100m
+    @white_t = 1.2 * @fast_foward / white_lap100m
     @white_tick = -36 - 7.2 * (white_handi/10)
     @white_x, @white_y = handicap[white_handi]
 
     black_handi = racers['black'][0]
     black_lap100m = racers['black'][1]
-    @black_t = 1.2 / black_lap100m
+    @black_t = 1.2 * @fast_foward / black_lap100m
     @black_tick = -36 - 7.2 * (black_handi/10)
     @black_x, @black_y = handicap[black_handi]
 
     red_handi = racers['red'][0]
     red_lap100m = racers['red'][1]
-    @red_t = 1.2 / red_lap100m
+    @red_t = 1.2 * @fast_foward / red_lap100m
     @red_tick = -36 - 7.2 * (red_handi/10)
     @red_x, @red_y = handicap[red_handi]
 
     blue_handi = racers['blue'][0]
     blue_lap100m = racers['blue'][1]
-    @blue_t = 1.2 / blue_lap100m
+    @blue_t = 1.2 * @fast_foward / blue_lap100m
     @blue_tick = -36 - 7.2 * (blue_handi/10)
     @blue_x, @blue_y = handicap[blue_handi]
 
     yellow_handi = racers['yellow'][0]
     yellow_lap100m = racers['yellow'][1]
-    @yellow_t = 1.2 / yellow_lap100m
+    @yellow_t = 1.2 * @fast_foward / yellow_lap100m
     @yellow_tick = -36 - 7.2 * (yellow_handi/10)
     @yellow_x, @yellow_y = handicap[yellow_handi]
 
     green_handi = racers['green'][0]
     green_lap100m = racers['green'][1]
-    @green_t = 1.2 / green_lap100m
+    @green_t = 1.2 * @fast_foward / green_lap100m
     @green_tick = -36 - 7.2 * (green_handi/10)
     @green_x, @green_y = handicap[green_handi]
 
     orange_handi = racers['orange'][0]
     orange_lap100m = racers['orange'][1]
-    @orange_t = 1.2 / orange_lap100m
+    @orange_t = 1.2 * @fast_foward / orange_lap100m
     @orange_tick = -36 - 7.2 * (orange_handi/10)
     @orange_x, @orange_y = handicap[orange_handi]
 
     pink_handi = racers['pink'][0]
     pink_lap100m = racers['pink'][1]
-    @pink_t = 1.2 / orange_lap100m
+    @pink_t = 1.2 * @fast_foward / orange_lap100m
     @pink_tick = -36 - 7.2 * (pink_handi/10)
     @pink_x, @pink_y = handicap[pink_handi]
 
     @buttons_down = 0
+    # ttfpath = 'C:\Users\frog7\AppData\Local\Microsoft\Windows\Fonts\Test.ttf'
+    # @font = Gosu::Font.new(20, :name => ttfpath)
     @text = Gosu::Font.new(self, Gosu::default_font_name, 20)
+
   end
 
   def update
@@ -207,7 +224,7 @@ class MyGame < Gosu::Window
     if @buttons_down == 1 then
 
       @tick += 1
-      @time = Gosu.milliseconds * 1/1000
+      @time = Gosu.milliseconds * 1/1000 * @fast_foward
       # @tick += @t
       # rad = @tick * Math::PI / 180
       # @x += 4.5 * @t * Math.cos(-rad)
@@ -218,40 +235,40 @@ class MyGame < Gosu::Window
       @white_x += 4.5 * @white_t * Math.cos(-rad)
       @white_y += 2.3 * @white_t * Math.sin(-rad)
 
-      # @black_tick += @black_t
-      # rad = @black_tick * Math::PI / 180
-      # @black_x += 4.5 * @black_t * Math.cos(-rad)
-      # @black_y += 2.3 * @black_t * Math.sin(-rad)
+      @black_tick += @black_t
+      rad = @black_tick * Math::PI / 180
+      @black_x += 4.5 * @black_t * Math.cos(-rad)
+      @black_y += 2.3 * @black_t * Math.sin(-rad)
 
-      # @red_tick += @red_t
-      # rad = @red_tick * Math::PI / 180
-      # @red_x += 4.5 * @red_t * Math.cos(-rad)
-      # @red_y += 2.3 * @red_t * Math.sin(-rad)
+      @red_tick += @red_t
+      rad = @red_tick * Math::PI / 180
+      @red_x += 4.5 * @red_t * Math.cos(-rad)
+      @red_y += 2.3 * @red_t * Math.sin(-rad)
 
-      # @blue_tick += @blue_t
-      # rad = @blue_tick * Math::PI / 180
-      # @blue_x += 4.5 * @blue_t * Math.cos(-rad)
-      # @blue_y += 2.3 * @blue_t * Math.sin(-rad)
+      @blue_tick += @blue_t
+      rad = @blue_tick * Math::PI / 180
+      @blue_x += 4.5 * @blue_t * Math.cos(-rad)
+      @blue_y += 2.3 * @blue_t * Math.sin(-rad)
 
-      # @yellow_tick += @yellow_t
-      # rad = @yellow_tick * Math::PI / 180
-      # @yellow_x += 4.5 * @yellow_t * Math.cos(-rad)
-      # @yellow_y += 2.3 * @yellow_t * Math.sin(-rad)
+      @yellow_tick += @yellow_t
+      rad = @yellow_tick * Math::PI / 180
+      @yellow_x += 4.5 * @yellow_t * Math.cos(-rad)
+      @yellow_y += 2.3 * @yellow_t * Math.sin(-rad)
 
-      # @green_tick += @green_t
-      # rad = @green_tick * Math::PI / 180
-      # @green_x += 4.5 * @green_t * Math.cos(-rad)
-      # @green_y += 2.3 * @green_t * Math.sin(-rad)
+      @green_tick += @green_t
+      rad = @green_tick * Math::PI / 180
+      @green_x += 4.5 * @green_t * Math.cos(-rad)
+      @green_y += 2.3 * @green_t * Math.sin(-rad)
 
-      # @orange_tick += @orange_t
-      # rad = @orange_tick * Math::PI / 180
-      # @orange_x += 4.5 * @orange_t * Math.cos(-rad)
-      # @orange_y += 2.3 * @orange_t * Math.sin(-rad)
+      @orange_tick += @orange_t
+      rad = @orange_tick * Math::PI / 180
+      @orange_x += 4.5 * @orange_t * Math.cos(-rad)
+      @orange_y += 2.3 * @orange_t * Math.sin(-rad)
 
-      # @pink_tick += @pink_t
-      # rad = @pink_tick * Math::PI / 180
-      # @pink_x += 4.5 * @pink_t * Math.cos(-rad)
-      # @pink_y += 2.3 * @pink_t * Math.sin(-rad)
+      @pink_tick += @pink_t
+      rad = @pink_tick * Math::PI / 180
+      @pink_x += 4.5 * @pink_t * Math.cos(-rad)
+      @pink_y += 2.3 * @pink_t * Math.sin(-rad)
 
     end
 
@@ -266,7 +283,7 @@ class MyGame < Gosu::Window
     pos_y = 10
     @white_img.draw(pos_x, pos_y, 2)
     @white_frm.draw(pos_x, pos_y, 1)
-    @text.draw_text(@white_rank, pos_x, pos_y+70, 3, 0.75, 0.75, Gosu::Color::BLACK)
+    @text.draw_text(@white_rank, pos_x, pos_y+70, 3, 0.75, 0.75, 0xff000000)
     @text.draw_text(@white_name, pos_x, pos_y+85, 3, 0.75, 0.75, Gosu::Color::BLACK)
 
     @black_img.draw(pos_x += add_x, pos_y, 2)
@@ -311,48 +328,48 @@ class MyGame < Gosu::Window
 
     if @white_tick < 360 * @lap + 36
       then @white.draw(@white_x, @white_y, 1)
-      # else @white.draw(@goal_x+goal_postion['white'], @goal_y, 1)
-      else unless $flag
-        $goal_time = @time.clone
-        $flag = true
-      end
+      else @white.draw(@goal_x - @white_goal, @goal_y + 10, 1)
+      # else unless $flag
+      #   $goal_time = @time.clone
+      #   $flag = true
+      # end
     end
-    @text.draw_text($goal_time, 300, 300, 1, 1, 1, Gosu::Color::RED)
+    # @text.draw_text($goal_time, 300, 300, 1, 1, 1, Gosu::Color::RED)
 
 
     if @black_tick < 360 * @lap + 36
       then @black.draw(@black_x, @black_y, 1)
-      else @black.draw(@goal_x+goal_postion['black'], @goal_y, 1)
+      else @black.draw(@goal_x - @black_goal, @goal_y + 10, 1)
     end
 
     if @red_tick < 360 * @lap + 36
       then @red.draw(@red_x, @red_y, 1)
-      else @red.draw(@goal_x+goal_postion['red'], @goal_y, 1)
+      else @red.draw(@goal_x - @red_goal, @goal_y + 10, 1)
     end
 
     if @blue_tick < 360 * @lap + 36
       then @blue.draw(@blue_x, @blue_y, 1)
-      else @blue.draw(@goal_x+goal_postion['blue'], @goal_y, 1)
+      else @blue.draw(@goal_x - @blue_goal, @goal_y + 10, 1)
     end
 
     if @yellow_tick < 360 * @lap + 36
       then @yellow.draw(@yellow_x, @yellow_y, 1)
-      else @yellow.draw(@goal_x+goal_postion['yellow'], @goal_y, 1)
+      else @yellow.draw(@goal_x - @yellow_goal, @goal_y + 10, 1)
     end
 
     if @green_tick < 360 * @lap + 36
       then @green.draw(@green_x, @green_y, 1)
-      else @green.draw(@goal_x+goal_postion['green'], @goal_y, 1)
+      else @green.draw(@goal_x - @green_goal, @goal_y + 10, 1)
     end
 
     if @orange_tick < 360 * @lap + 36
       then @orange.draw(@orange_x, @orange_y, 1)
-      else @orange.draw(@goal_x+goal_postion['orange'], @goal_y, 1)
+      else @orange.draw(@goal_x - @orange_goal, @goal_y + 10, 1)
     end
 
     if @pink_tick < 360 * @lap + 36
       then @pink.draw(@pink_x, @pink_y, 1)
-      else @pink.draw(@goal_x+goal_postion['pink'], @goal_y, 1)
+      else @pink.draw(@goal_x - @pink_goal, @goal_y + 10, 1)
     end
 
     # if 360 + 36 - 0.1 < @tick and @tick < 360 + 36 + 0.1 then p @x, @y, @tick end

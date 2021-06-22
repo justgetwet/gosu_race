@@ -3,57 +3,55 @@ require 'json'
 module RaceFile
 
   File.open("test.json") do |j|
-    $hash = JSON.load(j)
+    hash = JSON.load(j)
+    $images = []
+    $ranks = []
+    $names = []
+    $handicaps = []
+    $prdtimes = []
+    $prddiffs = []
+    hash["no"].size.times do |n|
+      rank = hash["rank"][n.to_s]
+      name = hash["name"][n.to_s].gsub(" ", "")
+      hand = hash["hand"][n.to_s].delete("m").to_i
+      team = hash["team"][n.to_s]
+      prdtime = hash["prd"][n.to_s]
+      prddiff = hash["prd-m"][n.to_s]
+      $images << './images/' + rank + "_" + name + ".jpg"
+      $ranks << rank + " " + team
+      $names << name
+      $handicaps << hand
+      $prdtimes << prdtime
+      $prddiffs << prddiff
+    end
+    # p $names
   end
 
   def images
-    images = []
-    $hash["no"].size.times do |n|
-      rank = $hash["rank"][n.to_s]
-      name = $hash["name"][n.to_s].gsub(" ", "")
-      filename = rank + "_" + name + ".jpg"
-      path = './images/'
-      images << path + filename
-    end
-    return images
+    $images
   end
 
-  def racernames
-    racernames = []
-    $hash["no"].size.times do |n|
-      name = $hash["name"][n.to_s]
-      racernames << name 
-    end
-    return racernames
+  def names
+    $names
   end
 
-  def racerranks
-    racerranks = []
-    $hash["no"].size.times do |n|
-      rank = $hash["rank"][n.to_s]
-      team = $hash["team"][n.to_s]
-      racerranks << rank + " " + team
-    end
-    return racerranks
+  def ranks
+    $ranks
   end
 
   def handicaps
-    handicaps = []
-    $hash["no"].size.times do |n|
-      handicaps << $hash["hand"][n.to_s].delete("m").to_i
-    end
-    return handicaps
+    $handicaps
   end
 
-  def racetimes
-    racetimes = []
-    $hash["no"].size.times do |n|
-      racetimes << $hash["prd"][n.to_s]
-    end
-    return racetimes
+  def prdtimes
+    $prdtimes
   end
 
-  module_function :images, :handicaps, :racetimes, :racernames, :racerranks
+  def prddiffs
+    $prddiffs
+  end
+
+  module_function :images, :names, :ranks, :handicaps, :prdtimes, :prddiffs
 
 end
 
