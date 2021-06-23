@@ -27,6 +27,11 @@ module RaceFile
     # p $names
   end
 
+  File.open("test2.json") do |j|
+    hash = JSON.load(j)
+    $racetitle = hash["title"]
+  end
+
   def images
     $images
   end
@@ -51,7 +56,11 @@ module RaceFile
     $prddiffs
   end
 
-  module_function :images, :names, :ranks, :handicaps, :prdtimes, :prddiffs
+  def racetitle
+    $racetitle
+  end
+
+  module_function :images, :names, :ranks, :handicaps, :prdtimes, :prddiffs, :racetitle
 
 end
 

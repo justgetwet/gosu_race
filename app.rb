@@ -9,6 +9,7 @@ module RaceData
   $handicaps = RaceFile.handicaps
   $racetimes = RaceFile.prdtimes
   $goaldiffs = RaceFile.prddiffs
+  $racetitle = RaceFile.racetitle
 
   def racers
     # color => [handicap, lap]
@@ -84,6 +85,7 @@ class MyGame < Gosu::Window
     @width = 640
     @height = 480
     super @width,@height,false
+    self.caption = $racetitle
     @background = Gosu::Image.new('course.png')
 
     @time = 0
@@ -214,8 +216,9 @@ class MyGame < Gosu::Window
 
     @buttons_down = 0
     # ttfpath = 'C:\Users\frog7\AppData\Local\Microsoft\Windows\Fonts\Test.ttf'
-    # @font = Gosu::Font.new(20, :name => ttfpath)
-    @text = Gosu::Font.new(self, Gosu::default_font_name, 20)
+    font = 'C:\Users\frog7\AppData\Local\Microsoft\Windows\Fonts\NotoSansJP-Regular.otf'
+    @text = Gosu::Font.new(20, :name => font)
+    # @text = Gosu::Font.new(self, Gosu::default_font_name, 20)
 
   end
 

@@ -15,7 +15,7 @@ PLATFORMS
   x64-mingw32
 
 DEPENDENCIES
-  gosu
+  gosu (~> 1.2.0)
   nokogiri
 
 BUNDLED WITH
