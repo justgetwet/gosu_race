@@ -1,11 +1,9 @@
 require 'gosu'
 require './readjson.rb'
+require './panels.rb'
 
 module RaceData
 
-  $racerimages = RaceFile.images
-  $racernames = RaceFile.names
-  $racerranks = RaceFile.ranks
   $handicaps = RaceFile.handicaps
   $racetimes = RaceFile.prdtimes
   $goaldiffs = RaceFile.prddiffs
@@ -37,43 +35,6 @@ module RaceData
     }
   end
 
-  def theoretical_time
-    {
-      'white' => racers['white'][1] * (racers['white'][0]/10 + 31),
-      'black' => racers['black'][1] * (racers['black'][0]/10 + 31),
-      'red' => racers['red'][1] * (racers['red'][0]/10 + 31),
-      'blue' => racers['blue'][1] * (racers['blue'][0]/10 + 31),
-      'yellow' => racers['yellow'][1] * (racers['yellow'][0]/10 + 31),
-      'green' => racers['green'][1] * (racers['green'][0]/10 + 31),
-      'orange' => racers['orange'][1] * (racers['orange'][0]/10 + 31),
-      'pink' => racers['pink'][1] * (racers['pink'][0]/10 + 31)
-    }
-  end
-
-  def goal_order
-    theoretical_time.sort_by { |_, v| v }
-  end
-
-  def goal_postion
-    goal_pos = {}
-    val = 0
-    goal_order.reverse.each do |e|
-      val += 10
-      goal_pos[e[0]] = val
-    end
-    return goal_pos
-  end
-
-  def fastest_tick 
-    # 最速time x 60 = 最速tick
-    goal_order[0][1] * 60
-  end
-
-  def fastest_tick_lap
-    # 周回の掲示用
-    (fastest_tick / 6).round(0)
-  end
-
 end
 
 class MyGame < Gosu::Window
@@ -88,6 +49,8 @@ class MyGame < Gosu::Window
     self.caption = $racetitle
     @background = Gosu::Image.new('course.png')
 
+    @racer = Panels.new
+
     @time = 0
 
     @purple = Gosu::Image.new('./colors/racer_0.png')
@@ -101,59 +64,18 @@ class MyGame < Gosu::Window
     @orange = Gosu::Image.new('./colors/racer_7.png')
     @pink = Gosu::Image.new('./colors/racer_8.png')
 
-    @white_frm = Gosu::Image.new('./colors/frame_1.jpg')
-    @black_frm = Gosu::Image.new('./colors/frame_2.jpg')
-    @red_frm = Gosu::Image.new('./colors/frame_3.jpg')
-    @blue_frm = Gosu::Image.new('./colors/frame_4.jpg')
-    @yellow_frm = Gosu::Image.new('./colors/frame_5.jpg')
-    @green_frm = Gosu::Image.new('./colors/frame_6.jpg')
-    @orange_frm = Gosu::Image.new('./colors/frame_7.jpg')
-    @pink_frm = Gosu::Image.new('./colors/frame_8.jpg')
-
-    @white_img = Gosu::Image.new($racerimages[0])
-    @black_img = Gosu::Image.new($racerimages[1])
-    @red_img = Gosu::Image.new($racerimages[2])
-    @blue_img = Gosu::Image.new($racerimages[3])
-    @yellow_img = Gosu::Image.new($racerimages[4])
-    @green_img = Gosu::Image.new($racerimages[5])
-    @orange_img = Gosu::Image.new($racerimages[6])
-    @pink_img = Gosu::Image.new($racerimages[7])
-
-    @white_rank = $racerranks[0]
-    @white_name = $racernames[0]
     @white_goal = $goaldiffs[0].round(0)
-    @black_rank = $racerranks[1]
-    @black_name = $racernames[1]
     @black_goal = $goaldiffs[1].round(0)
-    @red_rank = $racerranks[2]
-    @red_name = $racernames[2]
     @red_goal = $goaldiffs[2].round(0)
-    @blue_rank = $racerranks[3]
-    @blue_name = $racernames[3]
     @blue_goal = $goaldiffs[3].round(0)
-    @yellow_rank = $racerranks[4]
-    @yellow_name = $racernames[4]
     @yellow_goal = $goaldiffs[4].round(0)
-    @green_rank = $racerranks[5]
-    @green_name = $racernames[5]
     @green_goal = $goaldiffs[5].round(0)
-    @orange_rank = $racerranks[6]
-    @oragne_name = $racernames[6]
     @orange_goal = $goaldiffs[6].round(0)
-    @pink_rank = $racerranks[7]
-    @pink_name = $racernames[7]
     @pink_goal = $goaldiffs[7].round(0)
 
     @lap_count = 0
     @lap = 6
     @fast_foward = 2
-
-    # @s0m_x, @s0m_y = 168.0, 345.5
-    # @s10m_x, @s10m_y = 143.6, 335.4 # tick: 317.0
-    # @s20m_x, @s20m_y = 121.7, 323.8 # tick: 310.0
-    # @s30m_x, @s30m_y = 100.3, 309.0 # tick: 302.0
-    # @s40m_x, @s40m_y = 85.0, 295.0 # tick: 295.0
-    # @s50m_x, @s50m_y = 73.2, 280.0 # tick: 288.0
 
     # @zero_x, @zero_y = 320, 370
     @goal_x, @goal_y = 471.1, 344.1
@@ -215,10 +137,9 @@ class MyGame < Gosu::Window
     @pink_x, @pink_y = handicap[pink_handi]
 
     @buttons_down = 0
-    # ttfpath = 'C:\Users\frog7\AppData\Local\Microsoft\Windows\Fonts\Test.ttf'
-    font = 'C:\Users\frog7\AppData\Local\Microsoft\Windows\Fonts\NotoSansJP-Regular.otf'
-    @text = Gosu::Font.new(20, :name => font)
-    # @text = Gosu::Font.new(self, Gosu::default_font_name, 20)
+    # font = 'C:\Users\frog7\AppData\Local\Microsoft\Windows\Fonts\NotoSansJP-Regular.otf'
+    # @text = Gosu::Font.new(20, :name => font)
+    @text = Gosu::Font.new(self, Gosu::default_font_name, 20)
 
   end
 
@@ -280,54 +201,7 @@ class MyGame < Gosu::Window
 
   def draw
     @background.draw(0,0,0)
-
-    pos_x = 25
-    add_x = 75
-    pos_y = 10
-    @white_img.draw(pos_x, pos_y, 2)
-    @white_frm.draw(pos_x, pos_y, 1)
-    @text.draw_text(@white_rank, pos_x, pos_y+70, 3, 0.75, 0.75, 0xff000000)
-    @text.draw_text(@white_name, pos_x, pos_y+85, 3, 0.75, 0.75, Gosu::Color::BLACK)
-
-    @black_img.draw(pos_x += add_x, pos_y, 2)
-    @black_frm.draw(pos_x, pos_y, 1)
-    @text.draw_text(@black_rank, pos_x, pos_y+70, 3, 0.75, 0.75, Gosu::Color::BLACK)
-    @text.draw_text(@black_name, pos_x, pos_y+85, 3, 0.75, 0.75, Gosu::Color::BLACK)
-
-    @red_img.draw(pos_x += add_x, pos_y, 2)
-    @red_frm.draw(pos_x, pos_y, 1)
-    @text.draw_text(@red_rank, pos_x, pos_y+70, 3, 0.75, 0.75, Gosu::Color::BLACK)
-    @text.draw_text(@red_name, pos_x, pos_y+85, 3, 0.75, 0.75, Gosu::Color::BLACK)
-    
-    @blue_img.draw(pos_x += add_x, pos_y, 2)
-    @blue_frm.draw(pos_x, pos_y, 1)
-    @text.draw_text(@blue_rank, pos_x, pos_y+70, 3, 0.75, 0.75, Gosu::Color::BLACK)
-    @text.draw_text(@blue_name, pos_x, pos_y+85, 3, 0.75, 0.75, Gosu::Color::BLACK)
-
-    @yellow_img.draw(pos_x += add_x, pos_y, 2)
-    @yellow_frm.draw(pos_x, pos_y, 1)
-    @text.draw_text(@yellow_rank, pos_x, pos_y+70, 3, 0.75, 0.75, Gosu::Color::BLACK)
-    @text.draw_text(@yellow_name, pos_x, pos_y+85, 3, 0.75, 0.75, Gosu::Color::BLACK)
-
-    @green_img.draw(pos_x += add_x, pos_y, 2)
-    @green_frm.draw(pos_x, pos_y, 1)
-    @text.draw_text(@green_rank, pos_x, pos_y+70, 3, 0.75, 0.75, Gosu::Color::BLACK)
-    @text.draw_text(@green_name, pos_x, pos_y+85, 3, 0.75, 0.75, Gosu::Color::BLACK)
-
-    @orange_img.draw(pos_x += add_x, pos_y, 2)
-    @orange_frm.draw(pos_x, pos_y, 1)
-    @text.draw_text(@orange_rank, pos_x, pos_y+70, 3, 0.75, 0.75, Gosu::Color::BLACK)
-    @text.draw_text(@oragne_name, pos_x, pos_y+85, 3, 0.75, 0.75, Gosu::Color::BLACK)
-
-    @pink_img.draw(pos_x += add_x, pos_y, 2)
-    @pink_frm.draw(pos_x, pos_y, 1)
-    @text.draw_text(@pink_rank, pos_x, pos_y+70, 3, 0.75, 0.75, Gosu::Color::BLACK)
-    @text.draw_text(@pink_name, pos_x, pos_y+85, 3, 0.75, 0.75, Gosu::Color::BLACK)
-
-    # if @tick < 360 * @lap + 36
-    #   then @purple.draw(@x, @y, 1)
-    #   else @purple.draw(@goal_x, @goal_y, 1)
-    # end
+    @racer.draw
 
     if @white_tick < 360 * @lap + 36
       then @white.draw(@white_x, @white_y, 1)
@@ -385,7 +259,7 @@ class MyGame < Gosu::Window
     # if 299.8 < @p_tick and @p_tick < 300.0 then p @p_x, @p_y, @p_tick end
 
     @text.draw_text(@time, 50, 350, 1, 1.5, 1.5, Gosu::Color::RED)
-
+    fastest_tick_lap = 1000
     if @tick == 1 or (@tick+1) % fastest_tick_lap == 0 then @lap_count += 1 end
     @text.draw_text(@lap_count, 50, 400, 1, 1.5, 1.5, Gosu::Color::BLUE)
 

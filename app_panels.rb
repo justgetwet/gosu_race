@@ -1,4 +1,5 @@
 require 'gosu'
+require 'mini_magick'
 require './panels.rb'
 
 class MyGame < Gosu::Window
@@ -8,9 +9,15 @@ class MyGame < Gosu::Window
     @height = 480
     super @width,@height,false
 		@racer = Panels.new
+    @background = Gosu::Image.new('./from_unsplash.jpg')
 	end
 
+  def update
+
+  end
+
 	def draw
+    @background.draw(0,0,0)
 		@racer.draw
 	end
 

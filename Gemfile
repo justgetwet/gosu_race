@@ -7,4 +7,6 @@ git_source(:github) {|repo_name| "https://github.com/#{repo_name}" }
 # gem "rails"
 
 gem "gosu", "~> 1.2.0"
+gem "mini_magick", "~> 4.11.0"
+
 gem "nokogiri" # 1.11.7

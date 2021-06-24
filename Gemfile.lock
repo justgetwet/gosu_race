@@ -2,6 +2,7 @@ GEM
   remote: https://rubygems.org/
   specs:
     gosu (1.2.0)
+    mini_magick (4.11.0)
     mini_portile2 (2.5.3)
     nokogiri (1.11.7)
       mini_portile2 (~> 2.5.0)
@@ -16,6 +17,7 @@ PLATFORMS
 
 DEPENDENCIES
   gosu (~> 1.2.0)
+  mini_magick (~> 4.11.0)
   nokogiri
 
 BUNDLED WITH

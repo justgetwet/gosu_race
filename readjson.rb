@@ -18,7 +18,7 @@ module RaceFile
       prdtime = hash["prd"][n.to_s]
       prddiff = hash["prd-m"][n.to_s]
       $images << './images/' + rank + "_" + name + ".jpg"
-      $ranks << rank + " " + team
+      $ranks << rank + " " + team.slice(0)
       $names << name
       $handicaps << hand
       $prdtimes << prdtime
