@@ -271,7 +271,7 @@ class MyGame < Gosu::Window
 
   def button_down(id)
     # move if id == Gosu::KbReturn
-    close if id ==Gosu::KbEscape
+    close if id == Gosu::KbEscape
     @buttons_down += 1
   end
 
