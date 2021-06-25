@@ -14,7 +14,7 @@ class MyGame < Gosu::Window
 
     @racers = Racers.new
     @buttons_down = 0
-    @ff = 1
+    @ff = 3
 	end
 
   def update
@@ -33,7 +33,7 @@ class MyGame < Gosu::Window
     # update if id == Gosu::KbReturn
     @ff = 1 if id == Gosu::KbF1
     @ff = 2 if id == Gosu::KbF2
-    @ff = 3 if id == Gosu::KbF3
+    @ff = 3 if id == Gosu::KbDelete
     close if id == Gosu::KbEscape
     if id == Gosu::Kb1
       p 'hai!'

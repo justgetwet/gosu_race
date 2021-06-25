@@ -4,10 +4,12 @@ require './readjson.rb'
 class Racer
 
   attr_accessor :color
-  attr_accessor :handicap, :racetime
+  attr_accessor :handicap
   attr_accessor :degree, :d
   attr_accessor :x, :y
-  attr_accessor :goal_x, :goal_y
+  attr_accessor :avg_goalx, :avg_goaly
+  attr_accessor :max_goalx, :max_goaly
+  attr_accessor :prd_goalx, :prd_goaly
 
 end
 
@@ -17,47 +19,54 @@ class Racers
 	def initialize
 
     $handicaps = RaceFile.handicaps
-    $avgtimes = RaceFile.avgtimes
-    $maxtimes = RaceFile.maxtimes
-    $prdtimes = RaceFile.prdtimes
+    $avgLaps = RaceFile.avgtimes
+    $maxLaps = RaceFile.maxtimes
+    $prdLaps = RaceFile.prdtimes
     $racetitle = RaceFile.racetitle
 
-    $racer_data = []
+    # $racer_data = []
     $racer_colors = []
-    $goal_times = []
-    $max_goal_times = []
-    $prd_goal_times = []
+    $avg_goaltimes = []
+    $max_goaltimes = []
+    $prd_goaltimes = []
     n = 0
-    avgs, maxs, prds = $avgtimes, $maxtimes, $prdtimes
-    $handicaps.zip(avgs, maxs, prds) do |handi, avgLap, maxLap, prdLap|
-      $racer_data << [handi, avgLap, maxLap, prdLap]
+    $handicaps.zip($avgLaps, $maxLaps, $prdLaps) do |hand, avgLap, maxLap, prdLap|
+      # $racer_data << [handi, avgLap, maxLap, prdLap]
       n += 1
       color = './colors/racer_' + n.to_s + '.png'
       $racer_colors << color
 
-      goal_time = (31 + handi.to_f/100) * avgLap
-      $goal_times << goal_time
+      avg_goaltime = (31 + hand.to_f/100) * avgLap
+      $avg_goaltimes << avg_goaltime
 
-      max_goal_time = (31 + handi.to_f/100) * maxLap
-      $max_goal_times << goal_time
+      max_goaltime = (31 + hand.to_f/100) * maxLap
+      $max_goaltimes << max_goaltime
 
-      prd_goal_time = (31 + handi.to_f/100) * prdLap
-      $prd_goal_times << goal_time
+      prd_goaltime = (31 + hand.to_f/100) * prdLap
+      $prd_goaltimes << prd_goaltime
 
     end
 
-    $top_time = $goal_times.min
-    $goal_positions = []
-    $goal_diffs = []
-    $mps = 0.034
-    $goal_x, $goal_y =  470.0, 345.0
-    $goal_times.each do |goal_time|
-      time_diff = goal_time - $top_time
-      m_diff = 2 * time_diff / $mps
-      $goal_diffs << m_diff
-      $goal_positions << [$goal_x + 50 - m_diff, $goal_y + 50]
+    def self.goal_positions(goaltimes, pos_y)
+
+      $top_time = goaltimes.min
+      $mps = 0.034 # 3.4sec / 100m
+      $goal_x, $goal_y =  470.0, 345.0
+      
+      $positions = []
+      # $goal_diffs = []
+      goaltimes.each do |goal_time|
+        time_diff = goal_time - $top_time
+        m_diff = 3 * time_diff / $mps
+        # $goal_diffs << m_diff
+        $positions << [$goal_x + 50 - m_diff, $goal_y + 25 + pos_y]
+      end
+      return $positions
     end
-    p $goal_diffs
+
+    $avgGoals = goal_positions($avg_goaltimes, 0)
+    $maxGoals = goal_positions($max_goaltimes, 25)
+    $prdGoals = goal_positions($prd_goaltimes, 50)
 
     $start_positions =
       {
@@ -71,18 +80,18 @@ class Racers
 
     # set racers
     @racers = []
-    $goal_times = []
-    $racer_colors.zip($racer_data, $goal_positions) do |color, data, goal|
+    # $goal_times = []
+    $racer_colors.zip($handicaps, $avgLaps, $avgGoals, $maxGoals, $prdGoals) do |color, hand, lap, avg, max, prd|
       racer = Racer.new
       racer.color = Gosu::Image.new(color)
-      handi = data[0]
-      lap100 = data[1]
-      racer.handicap = handi
-      racer.racetime = lap100
-      racer.degree = -36 - (7.2 * handi.to_f/10)
-      racer.d = 1.2 * 1 / lap100
-      racer.x, racer.y = $start_positions[handi]
-      racer.goal_x, racer.goal_y = goal
+      racer.handicap = hand
+      # racer.racetime = lap
+      racer.degree = -36 - (7.2 * hand.to_f/10)
+      racer.d = 1.2 * 1 / lap
+      racer.x, racer.y = $start_positions[hand]
+      racer.avg_goalx, racer.avg_goaly = avg
+      racer.max_goalx, racer.max_goaly = max
+      racer.prd_goalx, racer.prd_goaly = prd
       @racers << racer
 
     end
@@ -90,26 +99,6 @@ class Racers
     @purple = Gosu::Image.new('./colors/racer_0.png')
 
 	end
-
-  def spm_goal_positions
-
-  end
-
-  def avg_goal_positions
-
-  end
-
-  def max_goal_positions
-
-  end
-
-  def prd_goal_positions
-
-  end
-
-  def rlt_goal_positions
-
-  end
 
   def update(ff)
     @racers.each do |racer|
@@ -125,7 +114,10 @@ class Racers
     @racers.each do |racer|
       if racer.degree < 360 * 6 + 36
         then racer.color.draw(racer.x, racer.y, 1)
-        else racer.color.draw(racer.goal_x, racer.goal_y)
+        else 
+          racer.color.draw(racer.avg_goalx, racer.avg_goaly)
+          racer.color.draw(racer.max_goalx, racer.max_goaly)
+          racer.color.draw(racer.prd_goalx, racer.prd_goaly)
       end
     end
     # @purple.draw(320, 240, 1)
