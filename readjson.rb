@@ -2,8 +2,9 @@ require 'json'
 
 module RaceFile
 
-  File.open('test.json') do |j|
+  File.open('test_new.json') do |j|
     hash = JSON.load(j)
+    $racetitle = hash['title']
     $images = []
     $ranks = []
     $names = []
@@ -21,7 +22,7 @@ module RaceFile
       avgtime = hash['avg'][n]
       maxtime = hash['max'][n]
       prdtime = hash['prd'][n]
-      prddiff = hash['prd-m'][n]
+      prddiff = hash['pdm'][n]
       $images << './images/' + rank + '_' + name + '.jpg'
       $ranks << rank + ' ' + team.slice(0)
       $names << name
@@ -34,10 +35,10 @@ module RaceFile
     # p $names
   end
 
-  File.open('test2.json') do |j|
-    hash = JSON.load(j)
-    $racetitle = hash['title']
-  end
+  # File.open('test2.json') do |j|
+  #   hash = JSON.load(j)
+  #   $racetitle = hash['title']
+  # end
 
   def images
     $images

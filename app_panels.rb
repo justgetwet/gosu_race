@@ -9,10 +9,12 @@ class MyGame < Gosu::Window
     @width = 640
     @height = 480
     super @width,@height,false
-		@racer_panels = Panels.new
-    @background = Gosu::Image.new('./after2.jpg')
 
+    @background = Gosu::Image.new('./course.jpg')
+		@racer_panels = Panels.new
     @racers = Racers.new
+    self.caption = @racers.racetitle
+    
     @buttons_down = 0
     @ff = 3
 	end
