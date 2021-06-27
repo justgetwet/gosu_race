@@ -1,5 +1,5 @@
 require 'gosu'
-require './race.rb'
+require './racej.rb'
 
 class Panels
 

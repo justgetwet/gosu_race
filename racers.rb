@@ -1,5 +1,5 @@
 require 'gosu'
-require './race.rb'
+require './racej.rb'
 
 class Racer
 
@@ -14,15 +14,18 @@ class Racer
 end
 
 class Racers
+
+  attr_reader :title
 	
 	def initialize
 
-    @race = Race.new
-    pieces = @race.pieces
-    handicaps = @race.handicaps
-    avgLaps = @race.avgLaps
-    maxLaps = @race.maxLaps
-    prdLaps = @race.prdLaps
+    race = Race.new
+    @title = race.title
+    pieces = race.pieces
+    handicaps = race.handicaps
+    avgLaps = race.avgLaps
+    maxLaps = race.maxLaps
+    prdLaps = race.prdLaps
 
     racerColors = []
     avg_goaltimes = []
@@ -71,7 +74,7 @@ class Racers
       racer.piece = Gosu::Image.new(piece)
       racer.handicap = hand
       racer.degree = -36 - (7.2 * hand.to_f/10)
-      racer.d = 1.2 * 1 / lap
+      racer.d = 1.2 / lap
       racer.x, racer.y = start_positions[hand]
       racer.avg_goalx, racer.avg_goaly = avg
       racer.max_goalx, racer.max_goaly = max
@@ -104,10 +107,6 @@ class Racers
       end
     end
     # @purple.draw(320, 240, 1)
-  end
-
-  def raceTitle
-    @race.title
   end
 
 end
