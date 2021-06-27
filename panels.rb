@@ -1,5 +1,5 @@
 require 'gosu'
-require './readjson.rb'
+require './race.rb'
 
 class Panels
 
@@ -8,28 +8,26 @@ class Panels
     font = './fonts/MPLUS1p-Regular.ttf'
     @text = Gosu::Font.new(18, :name => font)
 
-		@racerimages = []
+		@images = []
 		@frames = []
     @ranks = []
     @names = []
-		no = 0
-		RaceFile.images.zip(RaceFile.ranks, RaceFile.names) do |image, rank, name|
-			@racerimages << Gosu::Image.new(image)
+    race = Race.new
+		race.images.zip(race.frames, race.ranks, race.names) do |image, frame, rank, name|
+			@images << Gosu::Image.new(image)
+			@frames << Gosu::Image.new(frame)
 			@ranks << rank
 			@names << name
-			no += 1
-			p = './colors/frame_' + no.to_s + '.jpg'
-			@frames << Gosu::Image.new(p)
 		end
 
 	end
 
 	def draw
-
+    
 		x = -50
 		y = 10
 		add_x = 75
-		@racerimages.zip(@frames, @ranks, @names) do |image, frame, rank, name|
+		@images.zip(@frames, @ranks, @names) do |image, frame, rank, name|
 			x += add_x
 			image.draw(x, y, 2)
 			frame.draw(x, y, 1)

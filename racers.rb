@@ -1,9 +1,9 @@
 require 'gosu'
-require './readjson.rb'
+require './race.rb'
 
 class Racer
 
-  attr_accessor :color
+  attr_accessor :piece
   attr_accessor :handicap
   attr_accessor :degree, :d
   attr_accessor :x, :y
@@ -17,20 +17,18 @@ class Racers
 	
 	def initialize
 
-    handicaps = RaceFile.handicaps
-    avgLaps = RaceFile.avgtimes
-    maxLaps = RaceFile.maxtimes
-    prdLaps = RaceFile.prdtimes
+    @race = Race.new
+    pieces = @race.pieces
+    handicaps = @race.handicaps
+    avgLaps = @race.avgLaps
+    maxLaps = @race.maxLaps
+    prdLaps = @race.prdLaps
 
     racerColors = []
     avg_goaltimes = []
     max_goaltimes = []
     prd_goaltimes = []
-    n = 0
     handicaps.zip(avgLaps, maxLaps, prdLaps) do |hand, avgLap, maxLap, prdLap|
-      n += 1
-      color = './colors/racer_' + n.to_s + '.png'
-      racerColors << color
       avg_goaltimes << (31 + hand.to_f/100) * avgLap
       max_goaltimes << (31 + hand.to_f/100) * maxLap
       prd_goaltimes << (31 + hand.to_f/100) * prdLap
@@ -66,13 +64,11 @@ class Racers
     maxGoals = goal_positions(max_goaltimes, 25)
     prdGoals = goal_positions(prd_goaltimes, 50)
 
-
-
     # set racers
     @racers = []
-    racerColors.zip(handicaps, avgLaps, avgGoals, maxGoals, prdGoals) do |color, hand, lap, avg, max, prd|
+    pieces.zip(handicaps, avgLaps, avgGoals, maxGoals, prdGoals) do |piece, hand, lap, avg, max, prd|
       racer = Racer.new
-      racer.color = Gosu::Image.new(color)
+      racer.piece = Gosu::Image.new(piece)
       racer.handicap = hand
       racer.degree = -36 - (7.2 * hand.to_f/10)
       racer.d = 1.2 * 1 / lap
@@ -83,7 +79,6 @@ class Racers
       @racers << racer
 
     end
-
     # @purple = Gosu::Image.new('./colors/racer_0.png')
 
 	end
@@ -101,18 +96,18 @@ class Racers
   def draw
     @racers.each do |racer|
       if racer.degree < 360 * 6 + 36
-        then racer.color.draw(racer.x, racer.y, 1)
+        then racer.piece.draw(racer.x, racer.y, 1)
         else 
-          racer.color.draw(racer.avg_goalx, racer.avg_goaly)
-          racer.color.draw(racer.max_goalx, racer.max_goaly)
-          racer.color.draw(racer.prd_goalx, racer.prd_goaly)
+          racer.piece.draw(racer.avg_goalx, racer.avg_goaly)
+          racer.piece.draw(racer.max_goalx, racer.max_goaly)
+          racer.piece.draw(racer.prd_goalx, racer.prd_goaly)
       end
     end
     # @purple.draw(320, 240, 1)
   end
 
-  def racetitle
-    RaceFile.racetitle
+  def raceTitle
+    @race.title
   end
 
 end

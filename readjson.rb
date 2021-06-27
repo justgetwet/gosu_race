@@ -4,14 +4,14 @@ module RaceFile
 
   File.open('test_new.json') do |j|
     hash = JSON.load(j)
-    $racetitle = hash['title']
+    $raceTitle = hash['title']
     $images = []
     $ranks = []
     $names = []
     $handicaps = []
-    $avgtimes = []
-    $maxtimes = []
-    $prdtimes = []
+    $avgLaps = []
+    $maxLaps = []
+    $prdLaps = []
     $prddiffs = []
     hash['no'].size.times do |no|
       n = no.to_s
@@ -19,18 +19,18 @@ module RaceFile
       name = hash['name'][n].gsub(' ', '')
       hand = hash['hand'][n].delete('m').to_i
       team = hash['team'][n]
-      avgtime = hash['avg'][n]
-      maxtime = hash['max'][n]
-      prdtime = hash['prd'][n]
-      prddiff = hash['pdm'][n]
+      avgLap = hash['avg'][n]
+      maxLap = hash['max'][n]
+      prdLap = hash['prd'][n]
+      prdDiff = hash['pdm'][n]
       $images << './images/' + rank + '_' + name + '.jpg'
       $ranks << rank + ' ' + team.slice(0)
       $names << name
       $handicaps << hand
-      $avgtimes << avgtime
-      $maxtimes << maxtime
-      $prdtimes << prdtime
-      $prddiffs << prddiff
+      $avgLaps << avgLap
+      $maxLaps << maxLap
+      $prdLaps << prdLap
+      $prddiffs << prdDiff
     end
     # p $names
   end
@@ -56,27 +56,27 @@ module RaceFile
     $handicaps
   end
 
-  def avgtimes
-    $avgtimes
+  def avgLaps
+    $avgLaps
   end
 
-  def maxtimes
-    $maxtimes
+  def maxLaps
+    $maxLaps
   end
 
-  def prdtimes
-    $prdtimes
+  def prdLaps
+    $prdLaps
   end
 
-  def prddiffs
-    $prddiffs
+  def prdDiffs
+    $prdDiffs
   end
 
-  def racetitle
-    $racetitle
+  def raceTitle
+    $raceTitle
   end
 
-  module_function :images, :names, :ranks, :handicaps, :avgtimes, :maxtimes, :prdtimes, :prddiffs, :racetitle
+  module_function :images, :names, :ranks, :handicaps, :avgLaps, :maxLaps, :prdLaps, :prdDiffs, :raceTitle
 
 end
 
