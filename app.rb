@@ -9,19 +9,25 @@ class MyGame < Gosu::Window
     @width = 640
     @height = 480
     super @width,@height,false
-
     @background = Gosu::Image.new('./course.jpg')
-		@panels = Panels.new
-    @racers = Racers.new
-    @raceInfo = RaceInfo.new
-    self.caption = @racers.title
-    
-    @buttons_down = 0
+    self.caption = ""
+    # @buttons_down = 0
+    @race_draw = false
+    @btn_s_down = 1
     @ff = 3
 	end
 
+  def load
+		@panels = Panels.new
+    @racers = Racers.new
+    @raceInfo = RaceInfo.new
+    @btn_s_down = 1
+    self.caption = @racers.title
+    @race_draw = true
+  end
+
   def update
-    if @buttons_down == 1
+    if @btn_s_down % 2 == 0
       @racers.update(@ff)
       @raceInfo.update(@ff)
     end
@@ -29,18 +35,25 @@ class MyGame < Gosu::Window
 
 	def draw
     @background.draw(0,0,0)
-		@panels.draw
-    @racers.draw
-    @raceInfo.draw
+    if @race_draw
+      @panels.draw
+      @racers.draw
+      @raceInfo.draw
+    end
 	end
+
+  def spam
+    @start = true
+  end
 
   def button_down(id)
     # update if id == Gosu::KbReturn
-    @ff = 1 if id == Gosu::KbF1
-    @ff = 2 if id == Gosu::KbF2
-    @ff = 3 if id == Gosu::KbDelete
-    close if id == Gosu::KbEscape
-    @buttons_down += 1
+    # close if id == Gosu::KbEscape
+    load if id == 15 # l
+    @btn_s_down += 1 if id == 22 # s
+    initialize if id == 6 # c
+    # p id
+    # @buttons_down += 1
   end
 
 end

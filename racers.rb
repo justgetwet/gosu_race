@@ -3,9 +3,9 @@ require './racej.rb'
 
 class Racer
 
-  attr_accessor :piece
+  attr_accessor :piece, :name
   attr_accessor :handicap
-  attr_accessor :degree, :d
+  attr_accessor :degree, :dif
   attr_accessor :x, :y
   attr_accessor :avg_goalx, :avg_goaly
   attr_accessor :max_goalx, :max_goaly
@@ -22,6 +22,7 @@ class Racers
     race = Race.new
     @title = race.title
     pieces = race.pieces
+    names = race.names
     handicaps = race.handicaps
     avgLaps = race.avgLaps
     maxLaps = race.maxLaps
@@ -31,12 +32,14 @@ class Racers
     avg_goaltimes = []
     max_goaltimes = []
     prd_goaltimes = []
+    avgLaps[0] = avgLaps[0] + 0.01
+    maxLaps[0] = maxLaps[0] + 0.01
+    prdLaps[0] = prdLaps[0] + 0.01
     handicaps.zip(avgLaps, maxLaps, prdLaps) do |hand, avgLap, maxLap, prdLap|
-      avg_goaltimes << (31 + hand.to_f/100) * avgLap
-      max_goaltimes << (31 + hand.to_f/100) * maxLap
-      prd_goaltimes << (31 + hand.to_f/100) * prdLap
+      avg_goaltimes << avgLap * (31.0 + hand.to_f/100)
+      max_goaltimes << maxLap * (31.0 + hand.to_f/100)
+      prd_goaltimes << prdLap * (31.0 + hand.to_f/100)
     end
-
     start_positions =
       {
         0 => [168.0, 345.5],
@@ -48,50 +51,50 @@ class Racers
       }
 
     def self.goal_positions(goaltimes, pos_y)
-
       top_time = goaltimes.min
       mps = 0.034 # 3.4sec / 100m
-      goal_x, goal_y =  470.0, 345.0
+      goal_x, goal_y =  470.0 + 50.0, 345.0 + 25.0
       
       positions = []
       goaltimes.each do |goal_time|
-        time_diff = goal_time - top_time
-        diff_m = 3 * time_diff / mps
-        positions << [goal_x + 50 - diff_m, goal_y + 25 + pos_y]
+        dif_m = (goal_time - top_time) / mps
+        # p dif_m
+        dif_x = 3 * dif_m
+        positions << [goal_x - dif_x, goal_y + pos_y]
       end
       return positions
     end
-
     # goal時の1着との距離
-    avgGoals = goal_positions(avg_goaltimes, 0)
-    maxGoals = goal_positions(max_goaltimes, 25)
-    prdGoals = goal_positions(prd_goaltimes, 50)
-
+    avgGoals = goal_positions(avg_goaltimes, 0.0)
+    maxGoals = goal_positions(max_goaltimes, 25.0)
+    prdGoals = goal_positions(prd_goaltimes, 50.0)
+    
     # set racers
     @racers = []
-    pieces.zip(handicaps, avgLaps, avgGoals, maxGoals, prdGoals) do |piece, hand, lap, avg, max, prd|
+    pieces.zip(names, handicaps, avgLaps, avgGoals, maxGoals, prdGoals) do |piece, name, hand, lap, avg, max, prd|
       racer = Racer.new
       racer.piece = Gosu::Image.new(piece)
+      racer.name = name
       racer.handicap = hand
-      racer.degree = -36 - (7.2 * hand.to_f/10)
-      racer.d = 1.2 / lap
+      racer.degree = -36.0 - (7.2 * hand.to_f/10)
+      racer.dif = 1.2 / lap
       racer.x, racer.y = start_positions[hand]
       racer.avg_goalx, racer.avg_goaly = avg
       racer.max_goalx, racer.max_goaly = max
       racer.prd_goalx, racer.prd_goaly = prd
       @racers << racer
-
     end
+
     # @purple = Gosu::Image.new('./colors/racer_0.png')
 
 	end
 
   def update(ff)
     @racers.each do |racer|
-      racer.degree += (racer.d * ff)
+      racer.degree += (racer.dif * ff)
       rad = racer.degree * Math::PI/180
-      racer.x += 4.5 * (racer.d * ff) * Math.cos(-rad)
-      racer.y += 2.3 * (racer.d * ff) * Math.sin(-rad)
+      racer.x += 4.5 * racer.dif * ff * Math.cos(-rad)
+      racer.y += 2.3 * racer.dif * ff * Math.sin(-rad)
     end
 
   end

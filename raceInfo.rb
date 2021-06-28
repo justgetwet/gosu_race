@@ -3,38 +3,44 @@ require './racej.rb'
 
 class Racer
 
-	attr_accessor :degree, :d
+	attr_accessor :degree, :dif
 
 end
 
 class RaceInfo
 
+	FONT = Gosu::Font.new(18, :name => './fonts/MPLUS1p-Regular.ttf')
+
 	def initialize
 		race = Race.new
+		a_idx = race.avgDifs.index(0.0)
+		avg_no = race.nos[a_idx]
+		avg_name = race.names[a_idx]
+		@avg_top = '平均lap 1着:(' + avg_no + ') ' + avg_name
 
-		# p race.avgDiffs.sort
-		# -> [0.0, 9.1764705882, 9.1764705882, 9.1764705882, ..
-		# minLap = race.avgLaps.min
-		# idx = race.avgLaps.index(minLap)
-		idx = race.avgDiffs.index(0.0)
-		lap = race.avgLaps[idx]
-		hand = race.handicaps[idx]
-		no = race.nos[idx]
-		name = race.names[idx]
-		@top = '1着: ' + no.to_s + ' ' + name
+		m_idx = race.maxDifs.index(0.0)
+		max_no = race.nos[m_idx]
+		max_name = race.names[m_idx]
+		@max_top = '最速lap 1着:(' + max_no + ') ' + max_name
+
+		p_idx = race.prdDifs.index(0.0)
+		prd_no = race.nos[p_idx]
+		prd_name = race.names[p_idx]
+		@prd_top = '予測lap 1着:(' + prd_no + ') ' + prd_name
+
+		lap = race.avgLaps[a_idx]
+		hand = race.handicaps[a_idx]
 		@topRacer = Racer.new
 		@topRacer.degree = -36 - (7.2 * hand.to_f/10)
-		@topRacer.d = 1.2 * 1 / lap
+		@topRacer.dif = 1.2 / lap
 
-    font = './fonts/MPLUS1p-Regular.ttf'
-    @text = Gosu::Font.new(18, :name => font)
 		@around = 1
 
 	end
 
 	def update(ff)
 		# @time = Gosu.milliseconds * 1/1000
-    @topRacer.degree += (@topRacer.d * ff)
+    @topRacer.degree += (@topRacer.dif * ff)
 
 	end
 
@@ -44,8 +50,11 @@ class RaceInfo
 		end
 		
 		if @topRacer.degree < 360 * 6 + 36
-			then @text.draw_text(@around, 200, 230, 1, 1.2, 1.2, Gosu::Color::RED)
-			else @text.draw_text(@top, 200, 230, 1, 1.2, 1.2, Gosu::Color::RED)
+			then FONT.draw_text(@around, 280, 200 , 1, 1.5, 1.5, Gosu::Color::BLUE)
+			else 
+				FONT.draw_text(@avg_top, 200, 230, 1, 1.2, 1.2, Gosu::Color::GREEN)
+				FONT.draw_text(@max_top, 200, 250, 1, 1.2, 1.2, Gosu::Color::RED)
+				FONT.draw_text(@prd_top, 200, 270, 1, 1.2, 1.2, Gosu::Color::BLUE)
 		end
 	end
 
