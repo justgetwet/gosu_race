@@ -16,17 +16,17 @@ class RaceInfo
 		a_idx = race.avgDifs.index(0.0)
 		avg_no = race.nos[a_idx]
 		avg_name = race.names[a_idx]
-		@avg_top = '平均lap 1着:(' + avg_no + ') ' + avg_name
+		@avg_top = '平均 Lap (' + avg_no + ') ' + avg_name
 
 		m_idx = race.maxDifs.index(0.0)
 		max_no = race.nos[m_idx]
 		max_name = race.names[m_idx]
-		@max_top = '最速lap 1着:(' + max_no + ') ' + max_name
+		@max_top = '最速 Lap (' + max_no + ') ' + max_name
 
 		p_idx = race.prdDifs.index(0.0)
 		prd_no = race.nos[p_idx]
 		prd_name = race.names[p_idx]
-		@prd_top = '予測lap 1着:(' + prd_no + ') ' + prd_name
+		@prd_top = '直前 Lap (' + prd_no + ') ' + prd_name
 
 		lap = race.avgLaps[a_idx]
 		hand = race.handicaps[a_idx]
@@ -45,16 +45,20 @@ class RaceInfo
 	end
 
 	def draw
+    # 640 x 480
+    # FONT.draw_text(@avg_top, 240, 220, 1, 1.2, 1.2, 0xff000000)
+    # FONT.draw_text(@max_top, 240, 240, 1, 1.2, 1.2, 0xff000000)
+    # FONT.draw_text(@prd_top, 240, 260, 1, 1.2, 1.2, 0xff000000)
 		if @topRacer.degree > 360 * @around + 36 and @around < 6
 			@around += 1
 		end
 		
 		if @topRacer.degree < 360 * 6 + 36
-			then FONT.draw_text(@around, 280, 200 , 1, 1.5, 1.5, Gosu::Color::BLUE)
+			then FONT.draw_text(@around, 310, 230 , 1, 2, 2, Gosu::Color::BLUE)
 			else 
-				FONT.draw_text(@avg_top, 200, 230, 1, 1.2, 1.2, Gosu::Color::GREEN)
-				FONT.draw_text(@max_top, 200, 250, 1, 1.2, 1.2, Gosu::Color::RED)
-				FONT.draw_text(@prd_top, 200, 270, 1, 1.2, 1.2, Gosu::Color::BLUE)
+				FONT.draw_text(@avg_top, 240, 220, 1, 1.2, 1.2, 0xff000000)
+				FONT.draw_text(@max_top, 240, 240, 1, 1.2, 1.2, 0xff000000)
+				FONT.draw_text(@prd_top, 240, 260, 1, 1.2, 1.2, 0xff000000)
 		end
 	end
 
