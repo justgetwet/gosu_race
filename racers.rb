@@ -10,6 +10,7 @@ class Racer
   attr_accessor :avg_goalx, :avg_goaly
   attr_accessor :max_goalx, :max_goaly
   attr_accessor :prd_goalx, :prd_goaly
+  attr_accessor :run_goalx, :run_goaly
 
 end
 
@@ -27,18 +28,21 @@ class Racers
     avgLaps = race.avgLaps
     maxLaps = race.maxLaps
     prdLaps = race.prdLaps
+    runLaps = race.runLaps
 
     racerColors = []
     avg_goaltimes = []
     max_goaltimes = []
     prd_goaltimes = []
+    run_goaltimes = []
     avgLaps[0] = avgLaps[0] + 0.01
     maxLaps[0] = maxLaps[0] + 0.01
     prdLaps[0] = prdLaps[0] + 0.01
-    handicaps.zip(avgLaps, maxLaps, prdLaps) do |hand, avgLap, maxLap, prdLap|
+    handicaps.zip(avgLaps, maxLaps, prdLaps, runLaps) do |hand, avgLap, maxLap, prdLap, runLap|
       avg_goaltimes << avgLap * (31.0 + hand.to_f/100)
       max_goaltimes << maxLap * (31.0 + hand.to_f/100)
       prd_goaltimes << prdLap * (31.0 + hand.to_f/100)
+      run_goaltimes << runLap * (31.0 + hand.to_f/100)
     end
     start_positions =
       {
@@ -68,10 +72,11 @@ class Racers
     avgGoals = goal_positions(avg_goaltimes, 0.0)
     maxGoals = goal_positions(max_goaltimes, 25.0)
     prdGoals = goal_positions(prd_goaltimes, 50.0)
+    runGoals = goal_positions(run_goaltimes, 75.0)
     
     # set racers
     @racers = []
-    pieces.zip(names, handicaps, avgLaps, avgGoals, maxGoals, prdGoals) do |piece, name, hand, lap, avg, max, prd|
+    pieces.zip(names, handicaps, avgLaps, avgGoals, maxGoals, prdGoals, runGoals) do |piece, name, hand, lap, avg, max, prd, run|
       racer = Racer.new
       racer.piece = Gosu::Image.new(piece)
       racer.name = name
@@ -82,6 +87,7 @@ class Racers
       racer.avg_goalx, racer.avg_goaly = avg
       racer.max_goalx, racer.max_goaly = max
       racer.prd_goalx, racer.prd_goaly = prd
+      racer.run_goalx, racer.run_goaly = run
       @racers << racer
     end
 
@@ -107,6 +113,7 @@ class Racers
           racer.piece.draw(racer.avg_goalx, racer.avg_goaly)
           racer.piece.draw(racer.max_goalx, racer.max_goaly)
           racer.piece.draw(racer.prd_goalx, racer.prd_goaly)
+          racer.piece.draw(racer.run_goalx, racer.run_goaly)
       end
     end
     # @purple.draw(320, 240, 1)

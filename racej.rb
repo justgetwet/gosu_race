@@ -7,6 +7,8 @@ class Race
   attr_reader :nos, :ranks, :names, :handicaps
   attr_reader :avgLaps, :maxLaps, :prdLaps
   attr_reader :avgDifs, :maxDifs, :prdDifs
+  attr_reader :runLaps, :runDifs
+  attr_reader :orders, :favs
 
   def initialize
 
@@ -26,6 +28,10 @@ class Race
       @avgDifs = []
       @maxDifs = []
       @prdDifs = []
+      @runLaps = []
+      @runDifs = []
+      @orders = []
+      @favs = []
       hash['no'].size.times do |no|
         n = no.to_s
         rank = hash['rank'][n]
@@ -44,9 +50,13 @@ class Race
         @avgDifs << hash['agm'][n]
         @maxDifs << hash['mxm'][n]
         @prdDifs << hash['pdm'][n]
+        @runLaps << hash['run'][n]
+        @runDifs << hash['rnm'][n]
+        @orders << hash['odr'][n]
+        @favs << hash['fav'][n]
       end
+      p @favs
     end
   end
-
 end
 
