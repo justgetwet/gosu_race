@@ -1,7 +1,7 @@
 require 'gosu'
 require './panels.rb'
 require './racers.rb'
-require './raceInfo.rb'
+require './topRacer.rb'
 
 class MyGame < Gosu::Window
 
@@ -13,36 +13,34 @@ class MyGame < Gosu::Window
     self.caption = ""
     # @buttons_down = 0
     @race_draw = false
-    @kbS_down = 1
-    @kbR_down = 1
+    @kbA_down, @kbP_down, @kbR_down = 1, 1, 1
     @ff = 3
 	end
 
   def load
 		@panels = Panels.new
     @racers = Racers.new
+    @topRacer = TopRacer.new
     self.caption = @racers.title
     @race_draw = true
-    if @kbS_down % 2 == 0
-      @raceInfo = RaceInfo.new('prd')
-    end
-    if @kbR_down % 2 == 0
-      @raceInfo = RaceInfo.new('run')
-    end
-    # @kbS_down = 1
-    # @kbR_down = 1
+    @kbA_down, @kbP_down, @kbR_down = 1, 1, 1
   end
 
   def update
-    if @kbS_down % 2 == 0
+    if @kbA_down % 2 == 0
       load if not @race_draw
-      @racers.update(@ff, 'avg_dif') # avg_dif or run_dif
-      @raceInfo.update(@ff)
+      @racers.update(@ff, 'avg_dif') # avg_dif or rcd_dif
+      @topRacer.update_avg(@ff)
+    end
+    if @kbP_down % 2 == 0
+      load if not @race_draw
+      @racers.update(@ff, 'prd_dif') # avg_dif or rcd_dif
+      @topRacer.update_prd(@ff)
     end
     if @kbR_down % 2 == 0
       load if not @race_draw
-      @racers.update(@ff, 'run_dif') # avg_dif or run_dif
-      @raceInfo.update(@ff)
+      @racers.update(@ff, 'rcd_dif') # avg_dif or rcd_dif
+      @topRacer.update_rcd(@ff)
     end
   end
 
@@ -50,13 +48,8 @@ class MyGame < Gosu::Window
     @background.draw(0,0,0)
     if @race_draw
       @panels.draw
-      @raceInfo.draw
-      if @kbS_down % 2 == 0
-        @racers.draw('a')
-      end
-      if @kbR_down % 2 == 0
-        @racers.draw('r')
-      end
+      @racers.draw
+      @topRacer.draw
     end
 	end
 
@@ -64,8 +57,10 @@ class MyGame < Gosu::Window
     # update if id == Gosu::KbReturn
     # close if id == Gosu::KbEscape
     load if id == 15 # l
-    @kbS_down += 1 if id == 22 # s
-    @kbR_down += 1 if id == 21 # r
+    @kbA_down += 1 if id == 4 # a: avg
+    @kbP_down += 1 if id == 19 # p: prd
+    @kbR_down += 1 if id == 21 # r: rcd
+    # p id
     initialize if id == 6 # c
     # @buttons_down += 1
   end
