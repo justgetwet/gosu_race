@@ -13,22 +13,35 @@ class MyGame < Gosu::Window
     self.caption = ""
     # @buttons_down = 0
     @race_draw = false
-    @btn_s_down = 1
+    @kbS_down = 1
+    @kbR_down = 1
     @ff = 3
 	end
 
   def load
 		@panels = Panels.new
     @racers = Racers.new
-    @raceInfo = RaceInfo.new
-    @btn_s_down = 1
     self.caption = @racers.title
     @race_draw = true
+    if @kbS_down % 2 == 0
+      @raceInfo = RaceInfo.new('prd')
+    end
+    if @kbR_down % 2 == 0
+      @raceInfo = RaceInfo.new('run')
+    end
+    # @kbS_down = 1
+    # @kbR_down = 1
   end
 
   def update
-    if @btn_s_down % 2 == 0
-      @racers.update(@ff)
+    if @kbS_down % 2 == 0
+      load if not @race_draw
+      @racers.update(@ff, 'avg_dif') # avg_dif or run_dif
+      @raceInfo.update(@ff)
+    end
+    if @kbR_down % 2 == 0
+      load if not @race_draw
+      @racers.update(@ff, 'run_dif') # avg_dif or run_dif
       @raceInfo.update(@ff)
     end
   end
@@ -37,22 +50,23 @@ class MyGame < Gosu::Window
     @background.draw(0,0,0)
     if @race_draw
       @panels.draw
-      @racers.draw
       @raceInfo.draw
+      if @kbS_down % 2 == 0
+        @racers.draw('a')
+      end
+      if @kbR_down % 2 == 0
+        @racers.draw('r')
+      end
     end
 	end
-
-  def spam
-    @start = true
-  end
 
   def button_down(id)
     # update if id == Gosu::KbReturn
     # close if id == Gosu::KbEscape
     load if id == 15 # l
-    @btn_s_down += 1 if id == 22 # s
+    @kbS_down += 1 if id == 22 # s
+    @kbR_down += 1 if id == 21 # r
     initialize if id == 6 # c
-    # p id
     # @buttons_down += 1
   end
 

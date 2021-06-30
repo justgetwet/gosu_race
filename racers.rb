@@ -5,7 +5,8 @@ class Racer
 
   attr_accessor :piece, :name
   attr_accessor :handicap
-  attr_accessor :degree, :dif
+  attr_accessor :degree
+  attr_accessor :avg_dif, :run_dif
   attr_accessor :x, :y
   attr_accessor :avg_goalx, :avg_goaly
   attr_accessor :max_goalx, :max_goaly
@@ -57,7 +58,7 @@ class Racers
     def self.goal_positions(goaltimes, pos_y)
       top_time = goaltimes.min
       mps = 0.034 # 3.4sec / 100m
-      goal_x, goal_y =  470.0 + 50.0, 345.0 + 25.0
+      goal_x, goal_y =  470.0 + 50.0, 345.0 + 15.0
       
       positions = []
       goaltimes.each do |goal_time|
@@ -76,13 +77,15 @@ class Racers
     
     # set racers
     @racers = []
-    pieces.zip(names, handicaps, avgLaps, avgGoals, maxGoals, prdGoals, runGoals) do |piece, name, hand, lap, avg, max, prd, run|
+    pieces.zip(names, handicaps, avgLaps, runLaps, avgGoals, maxGoals, prdGoals, runGoals) do 
+      |piece, name, hand, avglap, runlap, avg, max, prd, run|
       racer = Racer.new
       racer.piece = Gosu::Image.new(piece)
       racer.name = name
       racer.handicap = hand
       racer.degree = -36.0 - (7.2 * hand.to_f/10)
-      racer.dif = 1.2 / lap
+      racer.avg_dif = 1.2 / avglap
+      racer.run_dif = 1.2 / runlap
       racer.x, racer.y = start_positions[hand]
       racer.avg_goalx, racer.avg_goaly = avg
       racer.max_goalx, racer.max_goaly = max
@@ -95,17 +98,17 @@ class Racers
 
 	end
 
-  def update(ff)
+  def update(ff, method_name)
     @racers.each do |racer|
-      racer.degree += (racer.dif * ff)
+      d = racer.send(method_name)
+      racer.degree += (d * ff)
       rad = racer.degree * Math::PI/180
-      racer.x += 4.5 * racer.dif * ff * Math.cos(-rad)
-      racer.y += 2.3 * racer.dif * ff * Math.sin(-rad)
+      racer.x += 4.5 * d * ff * Math.cos(-rad)
+      racer.y += 2.3 * d * ff * Math.sin(-rad)
     end
-
   end
 
-  def draw
+  def draw(opt)
     @racers.each do |racer|
       if racer.degree < 360 * 6 + 36
         then racer.piece.draw(racer.x, racer.y, 1)
@@ -113,7 +116,9 @@ class Racers
           racer.piece.draw(racer.avg_goalx, racer.avg_goaly)
           racer.piece.draw(racer.max_goalx, racer.max_goaly)
           racer.piece.draw(racer.prd_goalx, racer.prd_goaly)
-          racer.piece.draw(racer.run_goalx, racer.run_goaly)
+          if opt == 'r'
+            racer.piece.draw(racer.run_goalx, racer.run_goaly)
+          end
       end
     end
     # @purple.draw(320, 240, 1)

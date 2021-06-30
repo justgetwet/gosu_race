@@ -55,7 +55,6 @@ class Race
         @orders << hash['odr'][n]
         @favs << hash['fav'][n]
       end
-      p @favs
     end
   end
 end
