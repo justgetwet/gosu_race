@@ -50,8 +50,8 @@ class Race
         @avgDifs << hash['agm'][n]
         @maxDifs << hash['mxm'][n]
         @prdDifs << hash['pdm'][n]
-        @rcdLaps << hash['run'][n] # run -> rcd
-        @rcdDifs << hash['rnm'][n]
+        @rcdLaps << hash['rcd'][n]
+        @rcdDifs << hash['rcm'][n]
         @orders << hash['odr'][n]
         @favs << hash['fav'][n]
       end
