@@ -18,7 +18,8 @@ end
 class Racers
 
   attr_reader :title
-	
+	# attr_accessor :is_rcd
+
 	def initialize
 
     race = Race.new
@@ -45,6 +46,10 @@ class Racers
       prd_goaltimes << prdLap * (31.0 + hand.to_f/100)
       rcd_goaltimes << rcdLap * (31.0 + hand.to_f/100)
     end
+    degree = -36.0 - (7.2 * 1)
+    rad = degree * Math::PI/180
+    p -7.2 * 1 * Math.cos(-rad)
+    p -7.2 * 1 * Math.sin(-rad)
     start_positions =
       {
         0 => [168.0, 345.5],

@@ -55,7 +55,7 @@ class MyGame < Gosu::Window
 
   def button_down(id)
     # update if id == Gosu::KbReturn
-    # close if id == Gosu::KbEscape
+    close if id == Gosu::KbEscape
     load if id == 15 # l
     @kbA_down += 1 if id == 4 # a: avg
     @kbP_down += 1 if id == 19 # p: prd
