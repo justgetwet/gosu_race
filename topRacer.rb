@@ -10,7 +10,7 @@ end
 class TopRacer
 
 	FONT = Gosu::Font.new(18, :name => './fonts/RictyDiminished-Regular.ttf')
-	attr_accessor :race
+	attr_accessor :lapcase
 
 	def initialize
 		race = Race.new
@@ -86,14 +86,14 @@ class TopRacer
 				FONT.draw_text(@lapcase, 222, 238 , 1, 1.2, 1.2, 0xff000000)
         FONT.draw_text(@around, 310, 230 , 1, 2, 2, 0xff000000)
 			else
-				FONT.draw_text(@avg_top, 220, 210, 1, 1.2, 1.2, 0xff000000)
-				FONT.draw_text(@max_top, 220, 230, 1, 1.2, 1.2, 0xff000000)
+				FONT.draw_text(@avg_top, 215, 200, 1, 1.2, 1.2, 0xff000000)
+				FONT.draw_text(@max_top, 215, 225, 1, 1.2, 1.2, 0xff000000)
 				if @lapcase == 'Predict'
-					FONT.draw_text(@prd_top, 220, 250, 1, 1.2, 1.2, Gosu::Color::BLUE)
+					FONT.draw_text(@prd_top, 215, 250, 1, 1.2, 1.2, Gosu::Color::BLUE)
 				end
         if @lapcase == ' Record'
-					FONT.draw_text(@prd_top, 220, 250, 1, 1.2, 1.2, 0xff000000)
-          FONT.draw_text(@rcd_top, 220, 270, 1, 1.2, 1.2, Gosu::Color::BLUE)
+					FONT.draw_text(@prd_top, 215, 250, 1, 1.2, 1.2, 0xff000000)
+          FONT.draw_text(@rcd_top, 215, 275, 1, 1.2, 1.2, Gosu::Color::BLUE)
         end
       end
 	end

@@ -3,10 +3,9 @@ require './racej.rb'
 
 class Panels
 
-	def initialize
+	FONT = Gosu::Font.new(14, :name => './fonts/RictyDiminished-Regular.ttf')
 
-    font = './fonts/MPLUS1p-Regular.ttf'
-    @text = Gosu::Font.new(18, :name => font)
+	def initialize
 
 		@images = []
 		@frames = []
@@ -31,8 +30,8 @@ class Panels
 			x += add_x
 			image.draw(x, y, 2)
 			frame.draw(x, y, 1)
-      @text.draw_text(name, x, y+70, 1, 1, 1, 0xff000000)
-      @text.draw_text(rank, x, y+85, 1, 1, 1, 0xff000000)
+      FONT.draw_text(name, x, y+70, 1, 1, 1, 0xff000000)
+      FONT.draw_text(rank, x, y+85, 1, 1, 1, 0xff000000)
 		end
 
 	end

@@ -14,7 +14,7 @@ class MyGame < Gosu::Window
     # @buttons_down = 0
     @race_draw = false
     @kbA_down, @kbP_down, @kbR_down = 1, 1, 1
-    @ff = 3
+    @ff = 5
 	end
 
   def load
