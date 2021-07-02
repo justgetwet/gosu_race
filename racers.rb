@@ -18,7 +18,7 @@ end
 class Racers
 
   attr_reader :title
-	# attr_accessor :is_rcd
+  attr_accessor :sum_rcd
 
 	def initialize
 
@@ -31,6 +31,7 @@ class Racers
     maxLaps = race.maxLaps
     prdLaps = race.prdLaps
     rcdLaps = race.rcdLaps
+    @sum_rcd = rcdLaps.sum
 
     racerColors = []
     avg_goaltimes = []
@@ -46,18 +47,30 @@ class Racers
       prd_goaltimes << prdLap * (31.0 + hand.to_f/100)
       rcd_goaltimes << rcdLap * (31.0 + hand.to_f/100)
     end
-    degree = -36.0 - (7.2 * 1)
-    rad = degree * Math::PI/180
-    p -7.2 * 1 * Math.cos(-rad)
-    p -7.2 * 1 * Math.sin(-rad)
+
+    # degree = -36
+    # dif = 7.2 # 10m
+    # x, y =  168.0, 345.5 # -36d. 0 han
+    # 50.times do |n|
+    #   degree += dif
+    #   rad = degree * Math::PI/180
+    #   x += 4.5 * dif * Math.cos(-rad)
+    #   y += 2.3 * dif * Math.sin(-rad)
+    #   if n > 40
+    #     print("#{(49-n)*10} => [#{x.round(1)}, #{y.round(1)}],\n")
+    #   end
+    # end
     start_positions =
       {
-        0 => [168.0, 345.5],
-        10 => [143.6, 335.4],
-        20 => [121.7, 323.8],
-        30 => [100.3, 309.0],
-        40 => [85.0, 295.0],
-        50 => [73.2, 280.0]
+        80 => [48.2, 234.2],
+        70 => [50.3, 250.7],
+        60 => [56.3, 267.0],
+        50 => [66.4, 282.7],
+        40 => [80.2, 297.7],
+        30 => [97.5, 311.7],
+        20 => [118.2, 324.4],
+        10 => [141.8, 335.8],
+        0 => [168.0, 345.5]
       }
 
     def self.goal_positions(goaltimes, pos_y)

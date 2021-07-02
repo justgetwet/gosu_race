@@ -38,6 +38,7 @@ class MyGame < Gosu::Window
       @topRacer.update_prd(@ff)
     end
     if @kbR_down % 2 == 0
+      return if @racers.sum_rcd == 0
       load if not @race_draw
       @racers.update(@ff, 'rcd_dif') # avg_dif or rcd_dif
       @topRacer.update_rcd(@ff)
