@@ -36,8 +36,8 @@ class Race
         n = no.to_s
         rank = hash['rank'][n]
         name = hash['name'][n].gsub(' ', '')
-        team = hash['team'][n]
-        @nos << no.next.to_s
+        team = hash['lg'][n]
+        @nos << hash['no'][n]
         @images << './images/' + rank + '_' + name + '.jpg'
         @frames << './colors/frame_' + no.next.to_s + '.jpg'
         @pieces << './colors/racer_' + no.next.to_s + '.png'
@@ -45,13 +45,13 @@ class Race
         @names << name
         @handicaps << hash['hand'][n].delete('m').to_i
         @avgLaps << hash['avg'][n]
-        @maxLaps << hash['max'][n]
+        @maxLaps << hash['fst'][n]
         @prdLaps << hash['prd'][n]
-        @avgDifs << hash['agm'][n]
-        @maxDifs << hash['mxm'][n]
+        @avgDifs << hash['avm'][n]
+        @maxDifs << hash['fsm'][n]
         @prdDifs << hash['pdm'][n]
-        @rcdLaps << hash['rcd'][n]
-        @rcdDifs << hash['rcm'][n]
+        @rcdLaps << hash['run'][n]
+        @rcdDifs << hash['rnm'][n]
         @orders << hash['odr'][n]
         @favs << hash['fav'][n]
       end

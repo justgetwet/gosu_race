@@ -30,7 +30,10 @@ class Racers
     avgLaps = race.avgLaps
     maxLaps = race.maxLaps
     prdLaps = race.prdLaps
-    rcdLaps = race.rcdLaps
+    if race.rcdLaps.all?
+      then rcdLaps = race.rcdLaps
+      else rcdLaps = race.rcdLaps.map(&:to_i) # nilを0へ変換
+    end 
     @sum_rcd = rcdLaps.sum
 
     racerColors = []

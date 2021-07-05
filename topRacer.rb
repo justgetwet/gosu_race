@@ -27,19 +27,27 @@ class TopRacer
     # @max_lap = race.maxLaps[m_idx]
 		@max_top = 'Fst lap (' + max_no + ') ' + max_name
 
-		p_idx = race.prdDifs.index(0.0)
-		prd_no = race.nos[p_idx]
-		prd_name = race.names[p_idx]
-    @prd_lap = race.prdLaps[p_idx]
-		@prd_dif = 1.2 / @prd_lap
-		@prd_top = 'Prd lap (' + prd_no + ') ' + prd_name
+		if race.prdDifs.all?
+			p_idx = race.prdDifs.index(0.0)
+			prd_no = race.nos[p_idx]
+			prd_name = race.names[p_idx]
+			@prd_lap = race.prdLaps[p_idx]
+			@prd_dif = 1.2 / @prd_lap
+			@prd_top = 'Prd lap (' + prd_no + ') ' + prd_name
+		else
+			@prd_top = ""
+		end
 
-		r_idx = race.rcdDifs.index(0.0)
-		rcd_no = race.nos[r_idx]
-		rcd_name = race.names[r_idx]
-    @rcd_lap = race.rcdLaps[r_idx]
-		@rcd_dif = 1.2 / @rcd_lap
-		@rcd_top = 'Rcd lap (' + rcd_no + ') ' + rcd_name
+		if race.rcdDifs.all?
+			r_idx = race.rcdDifs.index(0.0)
+			rcd_no = race.nos[r_idx]
+			rcd_name = race.names[r_idx]
+			@rcd_lap = race.rcdLaps[r_idx]
+			@rcd_dif = 1.2 / @rcd_lap
+			@rcd_top = 'Rcd lap (' + rcd_no + ') ' + rcd_name
+		else
+			@rcd_top = ""
+		end
 
     hand = race.handicaps[a_idx]
     @racer = Racer.new
