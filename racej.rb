@@ -44,7 +44,11 @@ class Race
         @pieces << './colors/racer_' + no.next.to_s + '.png'
         @ranks << rank + ' ' + lg.slice(0)
         @names << name
-        @handicaps << hash['hand'][n].delete('m').to_i
+        if hash['hand'][n] != nil
+          @handicaps << hash['hand'][n].delete('m').to_i
+        else
+          @handicaps << '0m'
+        end
         @avgLaps << hash['avg'][n]
         @fstLaps << hash['fst'][n]
         @prdLaps << hash['prd'][n]
