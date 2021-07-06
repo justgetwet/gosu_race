@@ -10,7 +10,9 @@ end
 class TopRacer
 
 	FONT = Gosu::Font.new(18, :name => './fonts/RictyDiminished-Regular.ttf')
-	attr_accessor :lapcase
+	
+  attr_accessor :lapcase
+  attr_accessor :prd_top, :run_top
 
 	def initialize
 		race = Race.new
@@ -21,32 +23,32 @@ class TopRacer
 		@avg_dif = 1.2 / @avg_lap
 		@avg_top = 'Avg lap (' + avg_no + ') ' + avg_name
 
-		m_idx = race.maxDifs.index(0.0)
-		max_no = race.nos[m_idx]
-		max_name = race.names[m_idx]
+		m_idx = race.fstDifs.index(0.0)
+		fst_no = race.nos[m_idx]
+		fst_name = race.names[m_idx]
     # @max_lap = race.maxLaps[m_idx]
-		@max_top = 'Fst lap (' + max_no + ') ' + max_name
+		@fst_top = 'Fst lap (' + fst_no + ') ' + fst_name
 
 		if race.prdDifs.all?
 			p_idx = race.prdDifs.index(0.0)
 			prd_no = race.nos[p_idx]
 			prd_name = race.names[p_idx]
-			@prd_lap = race.prdLaps[p_idx]
-			@prd_dif = 1.2 / @prd_lap
+			prd_lap = race.prdLaps[p_idx]
+			@prd_dif = 1.2 / prd_lap
 			@prd_top = 'Prd lap (' + prd_no + ') ' + prd_name
 		else
 			@prd_top = ""
 		end
 
-		if race.rcdDifs.all?
-			r_idx = race.rcdDifs.index(0.0)
-			rcd_no = race.nos[r_idx]
-			rcd_name = race.names[r_idx]
-			@rcd_lap = race.rcdLaps[r_idx]
-			@rcd_dif = 1.2 / @rcd_lap
-			@rcd_top = 'Rcd lap (' + rcd_no + ') ' + rcd_name
+		if race.runDifs.all?
+			r_idx = race.runDifs.index(0.0)
+			run_no = race.nos[r_idx]
+			run_name = race.names[r_idx]
+			run_lap = race.runLaps[r_idx]
+			@run_dif = 1.2 / run_lap
+			@run_top = 'Rcd lap (' + run_no + ') ' + run_name
 		else
-			@rcd_top = ""
+			@run_top = ""
 		end
 
     hand = race.handicaps[a_idx]
@@ -75,12 +77,12 @@ class TopRacer
 		@racer.degree += @prd_dif * ff
 	end
 
-	def update_rcd(ff)
+	def update_run(ff)
 		unless @once
-			@lapcase = ' Record'
+			@lapcase = 'Run!'
 			@once = true
 		end
-		@racer.degree += @rcd_dif * ff
+		@racer.degree += @run_dif * ff
 	end
 	
 	def draw
@@ -95,13 +97,13 @@ class TopRacer
         FONT.draw_text(@around, 310, 230 , 1, 2, 2, 0xff000000)
 			else
 				FONT.draw_text(@avg_top, 215, 200, 1, 1.2, 1.2, 0xff000000)
-				FONT.draw_text(@max_top, 215, 225, 1, 1.2, 1.2, 0xff000000)
+				FONT.draw_text(@fst_top, 215, 225, 1, 1.2, 1.2, 0xff000000)
 				if @lapcase == 'Predict'
 					FONT.draw_text(@prd_top, 215, 250, 1, 1.2, 1.2, Gosu::Color::BLUE)
 				end
-        if @lapcase == ' Record'
+        if @lapcase == 'Run!'
 					FONT.draw_text(@prd_top, 215, 250, 1, 1.2, 1.2, 0xff000000)
-          FONT.draw_text(@rcd_top, 215, 275, 1, 1.2, 1.2, Gosu::Color::BLUE)
+          FONT.draw_text(@run_top, 215, 275, 1, 1.2, 1.2, Gosu::Color::BLUE)
         end
       end
 	end

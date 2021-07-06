@@ -6,19 +6,19 @@ class Racer
   attr_accessor :piece, :name
   attr_accessor :handicap
   attr_accessor :degree
-  attr_accessor :avg_dif, :prd_dif, :rcd_dif
+  attr_accessor :avg_dif, :prd_dif, :run_dif
   attr_accessor :x, :y
   attr_accessor :avg_goalx, :avg_goaly
-  attr_accessor :max_goalx, :max_goaly
+  attr_accessor :fst_goalx, :fst_goaly
   attr_accessor :prd_goalx, :prd_goaly
-  attr_accessor :rcd_goalx, :rcd_goaly
+  attr_accessor :run_goalx, :run_goaly
 
 end
 
 class Racers
 
   attr_reader :title
-  attr_accessor :sum_rcd
+  # attr_accessor :sum_rcd
 
 	def initialize
 
@@ -28,27 +28,34 @@ class Racers
     names = race.names
     handicaps = race.handicaps
     avgLaps = race.avgLaps
-    maxLaps = race.maxLaps
+    fstLaps = race.fstLaps
     prdLaps = race.prdLaps
-    if race.rcdLaps.all?
-      then rcdLaps = race.rcdLaps
-      else rcdLaps = race.rcdLaps.map(&:to_i) # nilを0へ変換
-    end 
-    @sum_rcd = rcdLaps.sum
+    runLaps = race.runLaps
+    # @sum_run = runLaps.sum
 
     racerColors = []
     avg_goaltimes = []
-    max_goaltimes = []
+    fst_goaltimes = []
     prd_goaltimes = []
-    rcd_goaltimes = []
-    avgLaps[0] = avgLaps[0] + 0.01
-    maxLaps[0] = maxLaps[0] + 0.01
-    prdLaps[0] = prdLaps[0] + 0.01
-    handicaps.zip(avgLaps, maxLaps, prdLaps, rcdLaps) do |hand, avgLap, maxLap, prdLap, rcdLap|
+    run_goaltimes = []
+
+    a1 = avgLaps.shift
+    avgLaps.insert(0, a1 + 0.01)
+    f1 = fstLaps.shift
+    fstLaps.insert(0, f1 + 0.01)
+    if prdLaps.all?
+      p1 = prdLaps.shift
+      prdLaps.insert(0, p1 + 0.01)
+    end
+    if runLaps.all?
+      r1 = runLaps.shift
+      runLaps.insert(0, r1 + 0.01)
+    end
+    handicaps.zip(avgLaps, fstLaps, prdLaps, runLaps) do |hand, avgLap, fstLap, prdLap, runLap|
       avg_goaltimes << avgLap * (31.0 + hand.to_f/100)
-      max_goaltimes << maxLap * (31.0 + hand.to_f/100)
-      prd_goaltimes << prdLap * (31.0 + hand.to_f/100)
-      rcd_goaltimes << rcdLap * (31.0 + hand.to_f/100)
+      fst_goaltimes << fstLap * (31.0 + hand.to_f/100)
+      prd_goaltimes << prdLap.to_f * (31.0 + hand.to_f/100) # nil -> 0.0
+      run_goaltimes << runLap.to_f * (31.0 + hand.to_f/100) # nil -> 0.0
     end
 
     # degree = -36
@@ -92,27 +99,27 @@ class Racers
     end
     # goal時の1着との距離
     avgGoals = goal_positions(avg_goaltimes, 0.0)
-    maxGoals = goal_positions(max_goaltimes, 25.0)
+    fstGoals = goal_positions(fst_goaltimes, 25.0)
     prdGoals = goal_positions(prd_goaltimes, 50.0)
-    rcdGoals = goal_positions(rcd_goaltimes, 75.0)
+    runGoals = goal_positions(run_goaltimes, 75.0)
     
     # set racers
     @racers = []
-    pieces.zip(names, handicaps, avgLaps, prdLaps, rcdLaps, avgGoals, maxGoals, prdGoals, rcdGoals) do 
-      |piece, name, hand, avglap, prdlap, rcdlap, avg, max, prd, rcd|
+    pieces.zip(names, handicaps, avgLaps, prdLaps, runLaps, avgGoals, fstGoals, prdGoals, runGoals) do 
+      |piece, name, hand, avglap, prdlap, runlap, avg, fst, prd, run|
       racer = Racer.new
       racer.piece = Gosu::Image.new(piece)
       racer.name = name
       racer.handicap = hand
       racer.degree = -36.0 - (7.2 * hand.to_f/10)
       racer.avg_dif = 1.2 / avglap
-      racer.prd_dif = 1.2 / prdlap
-      racer.rcd_dif = 1.2 / rcdlap
+      racer.prd_dif = 1.2 / prdlap.to_f
+      racer.run_dif = 1.2 / runlap.to_f
       racer.x, racer.y = start_positions[hand]
       racer.avg_goalx, racer.avg_goaly = avg
-      racer.max_goalx, racer.max_goaly = max
+      racer.fst_goalx, racer.fst_goaly = fst
       racer.prd_goalx, racer.prd_goaly = prd
-      racer.rcd_goalx, racer.rcd_goaly = rcd
+      racer.run_goalx, racer.run_goaly = run
       @racers << racer
     end
 
@@ -138,13 +145,13 @@ class Racers
           then racer.piece.draw(racer.x, racer.y, 1)
           else 
             racer.piece.draw(racer.avg_goalx, racer.avg_goaly)
-            racer.piece.draw(racer.max_goalx, racer.max_goaly)
+            racer.piece.draw(racer.fst_goalx, racer.fst_goaly)
             if @case_of_lap == 'prd_dif'
               racer.piece.draw(racer.prd_goalx, racer.prd_goaly)
             end
-            if @case_of_lap == 'rcd_dif'
+            if @case_of_lap == 'run_dif'
               racer.piece.draw(racer.prd_goalx, racer.prd_goaly)
-              racer.piece.draw(racer.rcd_goalx, racer.rcd_goaly)
+              racer.piece.draw(racer.run_goalx, racer.run_goaly)
             end
         end
       end

@@ -5,10 +5,10 @@ class Race
   attr_reader :title
   attr_reader :images, :frames, :pieces
   attr_reader :nos, :ranks, :names, :handicaps
-  attr_reader :avgLaps, :maxLaps, :prdLaps
-  attr_reader :avgDifs, :maxDifs, :prdDifs
-  attr_reader :rcdLaps, :rcdDifs
-  attr_reader :orders, :favs
+  attr_reader :avgLaps, :fstLaps, :prdLaps, :runLaps
+  attr_reader :avtDifs, :avgDifs, :fstDifs
+  attr_reader :prdDifs, :runDifs
+  attr_reader :odrs, :favs
 
   def initialize
 
@@ -23,36 +23,38 @@ class Race
       @names = []
       @handicaps = []
       @avgLaps = []
-      @maxLaps = []
+      @fstLaps = []
       @prdLaps = []
+      @runLaps = []
+      # @avtDifs = []
       @avgDifs = []
-      @maxDifs = []
+      @fstDifs = []
       @prdDifs = []
-      @rcdLaps = []
-      @rcdDifs = []
-      @orders = []
+      @runDifs = []
+      @odrs = []
       @favs = []
       hash['no'].size.times do |no|
         n = no.to_s
         rank = hash['rank'][n]
         name = hash['name'][n].gsub(' ', '')
-        team = hash['lg'][n]
+        lg = hash['lg'][n]
         @nos << hash['no'][n]
         @images << './images/' + rank + '_' + name + '.jpg'
         @frames << './colors/frame_' + no.next.to_s + '.jpg'
         @pieces << './colors/racer_' + no.next.to_s + '.png'
-        @ranks << rank + ' ' + team.slice(0)
+        @ranks << rank + ' ' + lg.slice(0)
         @names << name
         @handicaps << hash['hand'][n].delete('m').to_i
         @avgLaps << hash['avg'][n]
-        @maxLaps << hash['fst'][n]
+        @fstLaps << hash['fst'][n]
         @prdLaps << hash['prd'][n]
+        @runLaps << hash['run'][n]
+        # @avtDifs << hash["atm"][n]
         @avgDifs << hash['avm'][n]
-        @maxDifs << hash['fsm'][n]
+        @fstDifs << hash['fsm'][n]
         @prdDifs << hash['pdm'][n]
-        @rcdLaps << hash['run'][n]
-        @rcdDifs << hash['rnm'][n]
-        @orders << hash['odr'][n]
+        @runDifs << hash['rnm'][n]
+        @odrs << hash['odr'][n]
         @favs << hash['fav'][n]
       end
     end

@@ -1,17 +1,22 @@
+class OtherBettor
+
+  def toss
+    rand(2) + 1
+  end
+
+  def roll
+    rand(6) + 1
+  end
+
+end
+
+
 class Bettor
 
 	attr_accessor :hit_rate
 
 	def initialize
 		# @payout
-	end
-
-	def toss
-		rand(2) + 1
-	end
-
-	def choose_one
-		return self.toss
 	end
 
 	def betting(odds, bet_money)
@@ -26,20 +31,16 @@ end
 class Race
 
 	attr_accessor :house_edge
+  attr_reader :bets, :white_odds, :black_odds
 
 	def initialize
+    bettors = OtherBettor.new
 		@house_edge = 0.0
 		@bets = []
-		bettor = Bettor.new
-		bets_pool = 1000
-		bets_pool.times do
-			bet = bettor.choose_one
-			self.get_bets(bet)
+		1000.times do
+			bet = bettors.toss
+			@bets << bet
 		end
-	end
-
-	def get_bets(bet)
-		@bets << bet
 	end
 
 	def calc_odds
@@ -48,10 +49,6 @@ class Race
 		black_bets = @bets.count(2)
 		@white_odds = (1 - @house_edge) / (white_bets / all_bets)
 		@black_odds = (1 - @house_edge) / (black_bets / all_bets)
-	end
-
-	def white_odds
-		@white_odds
 	end
 
 	def show_odds
@@ -63,22 +60,27 @@ class Race
 
 end
 
-bettor = Bettor.new
-bettor.hit_rate = 0.8
-bet_money = 1000
-total_balance = 0
-10.times do
-	balance = 0
-	100.times do
-		race = Race.new
-		race.house_edge = 0.3
-		race.calc_odds
-		odds = race.white_odds
-		payout = bettor.betting(odds, bet_money)
-		balance += (payout - bet_money)
-	end
-	p balance
-	total_balance += balance
-end
-p '*****'
-p total_balance
+race = Race.new
+race.calc_odds
+p race.white_odds
+p race.black_odds
+
+# bettor = Bettor.new
+# bettor.hit_rate = 0.8
+# bet_money = 1000
+# total_balance = 0
+# 10.times do
+# 	balance = 0
+# 	100.times do
+# 		race = Race.new
+# 		race.house_edge = 0.3
+# 		race.calc_odds
+# 		odds = race.white_odds
+# 		payout = bettor.betting(odds, bet_money)
+# 		balance += (payout - bet_money)
+# 	end
+# 	p balance
+# 	total_balance += balance
+# end
+# p '*****'
+# p total_balance

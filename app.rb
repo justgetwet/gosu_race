@@ -32,16 +32,15 @@ class MyGame < Gosu::Window
       @racers.update(@ff, 'avg_dif') # avg_dif or rcd_dif
       @topRacer.update_avg(@ff)
     end
-    if @kbP_down % 2 == 0
+    if @kbP_down % 2 == 0 and @topRacer.prd_top != ''
       load if not @race_draw
       @racers.update(@ff, 'prd_dif') # avg_dif or rcd_dif
       @topRacer.update_prd(@ff)
     end
-    if @kbR_down % 2 == 0
-      return if @racers.sum_rcd == 0
+    if @kbR_down % 2 == 0 and @topRacer.run_top != ''
       load if not @race_draw
-      @racers.update(@ff, 'rcd_dif') # avg_dif or rcd_dif
-      @topRacer.update_rcd(@ff)
+      @racers.update(@ff, 'run_dif') # avg_dif or rcd_dif
+      @topRacer.update_run(@ff)
     end
   end
 
