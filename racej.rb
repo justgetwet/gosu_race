@@ -36,6 +36,7 @@ class Race
       hash['no'].size.times do |no|
         n = no.to_s
         rank = hash['rank'][n]
+        p hash['name']
         name = hash['name'][n].gsub(' ', '')
         lg = hash['lg'][n]
         @nos << hash['no'][n]
