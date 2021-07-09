@@ -70,7 +70,7 @@ class Racers
     #     print("#{(49-n)*10} => [#{x.round(1)}, #{y.round(1)}],\n")
     #   end
     # end
-    start_positions =
+    @start_positions =
       {
         80 => [48.2, 234.2],
         70 => [50.3, 250.7],
@@ -115,7 +115,7 @@ class Racers
       racer.avg_dif = 1.2 / avglap
       racer.prd_dif = 1.2 / prdlap.to_f
       racer.run_dif = 1.2 / runlap.to_f
-      racer.x, racer.y = start_positions[hand]
+      racer.x, racer.y = @start_positions[hand]
       racer.avg_goalx, racer.avg_goaly = avg
       racer.fst_goalx, racer.fst_goaly = fst
       racer.prd_goalx, racer.prd_goaly = prd
@@ -135,6 +135,13 @@ class Racers
       rad = racer.degree * Math::PI/180
       racer.x += 4.5 * d * ff * Math.cos(-rad)
       racer.y += 2.3 * d * ff * Math.sin(-rad)
+    end
+  end
+
+  def start
+    @racers.each do |racer|
+      x, y = @start_positions[racer.handicap]
+      racer.piece.draw(x, y)
     end
   end
 
