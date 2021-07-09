@@ -12,6 +12,7 @@ class MyGame < Gosu::Window
     @background = Gosu::Image.new('./course.jpg')
     self.caption = ""
     # @buttons_down = 0
+    @race_start = false
     @race_draw = false
     @kbA_down, @kbP_down, @kbR_down = 1, 1, 1
     @ff = 5
@@ -24,6 +25,14 @@ class MyGame < Gosu::Window
     self.caption = @racers.title
     @race_draw = true
     @kbA_down, @kbP_down, @kbR_down = 1, 1, 1
+  end
+
+  def start
+    @race_start = true
+  end
+
+  def clear_start
+    @race_start = false
   end
 
   def update
@@ -46,6 +55,9 @@ class MyGame < Gosu::Window
 
 	def draw
     @background.draw(0,0,0)
+    if @race_start
+      @racers.start
+    end
     if @race_draw
       @panels.draw
       @racers.draw
@@ -57,10 +69,12 @@ class MyGame < Gosu::Window
     # update if id == Gosu::KbReturn
     close if id == Gosu::KbEscape
     load if id == 15 # l
+    start if id == 22 # s: start position
+    clear_start if id != 22
     @kbA_down += 1 if id == 4 # a: avg
     @kbP_down += 1 if id == 19 # p: prd
     @kbR_down += 1 if id == 21 # r: rcd
-    # p id
+
     initialize if id == 6 # c
     # @buttons_down += 1
   end

@@ -4,7 +4,7 @@ class Race
 
   attr_reader :title
   attr_reader :images, :frames, :pieces
-  attr_reader :nos, :ranks, :names, :handicaps
+  attr_reader :nos, :ranks, :names, :hands, :handicaps
   attr_reader :avgLaps, :fstLaps, :prdLaps, :runLaps
   attr_reader :avtDifs, :avgDifs, :fstDifs
   attr_reader :prdDifs, :runDifs
@@ -21,6 +21,7 @@ class Race
       @nos = []
       @ranks = []
       @names = []
+      @hands = []
       @handicaps = []
       @avgLaps = []
       @fstLaps = []
@@ -36,7 +37,6 @@ class Race
       hash['no'].size.times do |no|
         n = no.to_s
         rank = hash['rank'][n]
-        p hash['name']
         name = hash['name'][n].gsub(' ', '')
         lg = hash['lg'][n]
         @nos << hash['no'][n]
@@ -45,11 +45,14 @@ class Race
         @pieces << './colors/racer_' + no.next.to_s + '.png'
         @ranks << rank + ' ' + lg.slice(0)
         @names << name
-        if hash['hand'][n] != nil
-          @handicaps << hash['hand'][n].delete('m').to_i
-        else
-          @handicaps << '0m'
-        end
+
+        @hands << hash['hand'][n]
+        @handicaps << hash['hand'][n].delete('m').to_i
+        # if hash['hand'][n] != nil
+        #   @handicaps << hash['hand'][n].delete('m').to_i
+        # else
+        #   @handicaps << '0m'
+        # end
         @avgLaps << hash['avg'][n]
         @fstLaps << hash['fst'][n]
         @prdLaps << hash['prd'][n]
